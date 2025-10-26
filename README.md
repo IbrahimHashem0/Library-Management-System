@@ -1,6 +1,6 @@
 # 📚 Library Management System
 
-A **Library Management System** developed using **C#** and **SQL Server** in **Visual Studio**.  
+A **Library Management System** developed using **C#** and **MySQL** in **Visual Studio**.  
 This project aims to simplify the process of managing books, users, and borrowing transactions in a library.
 
 ---
@@ -23,6 +23,6 @@ This project aims to simplify the process of managing books, users, and borrowin
 | **Language** | C# |
 | **Framework** | .NET / Windows Forms |
 | **IDE** | Visual Studio |
-| **Database** | SQL Server |
+| **Database** | MySQL |
 | **UI Design** | Windows Forms Designer |
 
