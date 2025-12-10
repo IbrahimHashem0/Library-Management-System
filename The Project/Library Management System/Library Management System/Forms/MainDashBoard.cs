@@ -19,10 +19,20 @@ namespace Library_Management_System.Forms
         }
         public void InitializeComponent()
         {
+            this.SuspendLayout();
+            // 
+            // MainDashBoard
+            // 
             this.ClientSize = new System.Drawing.Size(1000, 600);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.Name = "LoginForm";
-            this.FormBorderStyle = FormBorderStyle.Sizable;
+            this.Name = "MainDashBoard";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Load += new System.EventHandler(this.MainDashBoard_Load);
+            this.ResumeLayout(false);
+
+        }
+
+        private void MainDashBoard_Load(object sender, EventArgs e)
+        {
 
         }
     }

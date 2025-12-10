@@ -9,6 +9,7 @@ namespace Library_Management_System.Repositories
 {
     public class UserRepository
     {
+
         public User Login(string email, string plainPassword)
         {
             using (var conn = DatabaseHelper.GetConnection())
@@ -51,31 +52,36 @@ namespace Library_Management_System.Repositories
             return null; // Login Failed (Wrong password or email not found)
         }
 
-        public void RegisterUser(string name, string email, string plainPassword, string role)
+        public bool Register(string fullName, string email, string plainPassword, string role)
         {
-            DateTime date = DateTime.Now;
-            // 1. Hash the password immediately
             string hashedPassword = SecurityService.HashPassword(plainPassword);
+            string query = "INSERT INTO Users (FullName, Email, Password, Role) VALUES (@Name, @Email, @Pass, @Role)";
 
             using (var conn = DatabaseHelper.GetConnection())
+            using (var cmd = new SqlCommand(query, conn))
             {
-                conn.Open();
-                // 2. Insert the HASHED string, not the plain one
-                string query = "INSERT INTO Users (FullName, Email, Password, Role) VALUES (@Name, @Email, @Pass, @Role)";
+                cmd.Parameters.AddWithValue("@Name", fullName);
+                cmd.Parameters.AddWithValue("@Email", email);
+                cmd.Parameters.AddWithValue("@Pass", hashedPassword);
+                cmd.Parameters.AddWithValue("@Role", role);
 
-                using (var cmd = new SqlCommand(query, conn))
+                try
                 {
-                    cmd.Parameters.AddWithValue("@Name", name);
-                    cmd.Parameters.AddWithValue("@Email", email);
-
-                    // SAVE THE HASH
-                    cmd.Parameters.AddWithValue("@Pass", hashedPassword);
-
-                    cmd.Parameters.AddWithValue("@Role", role);
-                   
-                    cmd.ExecuteNonQuery();
+                    conn.Open();
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected == 1;
+                }
+                catch (SqlException ex) when (ex.Number == 2627)
+                {
+                    // Error 2627: Unique constraint violation (Email already exists)
+                    return false;
+                }
+                catch (Exception)
+                {
+                    return false;
                 }
             }
         }
     }
+    
 }
