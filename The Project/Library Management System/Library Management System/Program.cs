@@ -1,6 +1,8 @@
-﻿using Library_Management_System.Forms;
+﻿using Library_Management_System.Data;
+using Library_Management_System.Forms;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -15,7 +17,7 @@ namespace Library_Management_System
         [STAThread]
         static void Main()
         {
-
+           
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new LoginForm());

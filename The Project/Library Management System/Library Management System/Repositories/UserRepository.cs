@@ -1,7 +1,9 @@
 ﻿using Library_Management_System.Data;
 using Library_Management_System.Models;
 using LibrarySystem.Services;
+using System;
 using System.Data.SqlClient;
+using System.Windows.Forms;
 
 namespace Library_Management_System.Repositories
 {
@@ -35,7 +37,11 @@ namespace Library_Management_System.Repositories
                                     UserID = (int)reader["UserID"],
                                     FullName = reader["FullName"].ToString(),
                                     Email = reader["Email"].ToString(),
-                                    Role = reader["Role"].ToString()
+                                    Role = reader["Role"].ToString(),
+                                    CreatedAt = reader["CreatedAt"] != DBNull.Value
+                                                ? (DateTime)reader["CreatedAt"]
+                                                : DateTime.MinValue
+
                                 };
                             }
                         }
@@ -47,6 +53,7 @@ namespace Library_Management_System.Repositories
 
         public void RegisterUser(string name, string email, string plainPassword, string role)
         {
+            DateTime date = DateTime.Now;
             // 1. Hash the password immediately
             string hashedPassword = SecurityService.HashPassword(plainPassword);
 
@@ -65,6 +72,7 @@ namespace Library_Management_System.Repositories
                     cmd.Parameters.AddWithValue("@Pass", hashedPassword);
 
                     cmd.Parameters.AddWithValue("@Role", role);
+                   
                     cmd.ExecuteNonQuery();
                 }
             }
