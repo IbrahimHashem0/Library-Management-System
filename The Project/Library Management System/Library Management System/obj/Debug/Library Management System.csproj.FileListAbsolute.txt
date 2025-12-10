@@ -27,3 +27,4 @@ D:\FCI T3 T1\Visual Programming\New folder\TechNoovaa\Library-Management-System\
 D:\FCI T3 T1\Visual Programming\New folder\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.exe
 D:\FCI T3 T1\Visual Programming\New folder\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.pdb
 D:\FCI T3 T1\Visual Programming\New folder\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.MainDashBoard.resources
+C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.MainDashBoard.resources

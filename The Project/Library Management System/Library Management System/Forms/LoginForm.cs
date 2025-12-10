@@ -10,7 +10,7 @@ namespace Library_Management_System.Forms
     public partial class LoginForm : Form
     {
         // --- UI Control Declarations (Defined as private fields) ---
-        private Panel rightpnl, logInpnl, regPnl;
+        private Panel rightpnl, logInpnl, regPnl, activePanel;
         private PictureBox logInPicBox;
         private Label headerLabel, emailLabel, passwordLabel;
         private Button logInButton;
@@ -59,15 +59,10 @@ namespace Library_Management_System.Forms
             // Resize event to maintain layout
             this.Resize += (s, e) => {
                 logInPicBox.Width = this.ClientSize.Width / 2;
-                if (logInpnl != null&& regPnl == null)
+                if (activePanel != null)
                 {
-                    logInpnl.Left = (logInpnl.Parent.Width - logInpnl.Width) / 2;
-                    logInpnl.Top = (logInpnl.Parent.Height - logInpnl.Height) / 2;
-                }
-                if (regPnl != null)
-                {
-                    regPnl.Left = (regPnl.Parent.Width - regPnl.Width) / 2;
-                    regPnl.Top = (regPnl.Parent.Height - regPnl.Height) / 2;
+                    activePanel.Left = (rightpnl.Width - activePanel.Width) / 2;
+                    activePanel.Top = (rightpnl.Height - activePanel.Height) / 2;
                 }
             };
             this.ResumeLayout(false);
@@ -83,6 +78,10 @@ namespace Library_Management_System.Forms
 
             logInpnl = new Panel();
             logInpnl.Size = new Size(400, 450);
+            logInpnl.Size = new Size(400, 450);
+            activePanel = logInpnl;
+            logInpnl.Left = (rightpnl.Width - logInpnl.Width) / 2;
+            logInpnl.Top = (rightpnl.Height - logInpnl.Height) / 2;
 
             int innerX = (logInpnl.Width - 280) / 2;
             int y = 10;
@@ -155,7 +154,9 @@ namespace Library_Management_System.Forms
                 LinkColor = Color.FromArgb(28, 200, 138),
                 Cursor = Cursors.Hand
             };
-            lnkReg.Click += (s, e) => { showRegister(); }; // SWITCH TO REGISTER FORM
+            lnkReg.Click += (s, e) => {
+                regPnl=  null;
+                showRegister(); }; // SWITCH TO REGISTER FORM
 
             int totalWidth = dontHaveAcc.PreferredWidth + lnkReg.PreferredWidth;
             int startX = (logInpnl.Width - totalWidth) / 2;
@@ -220,8 +221,8 @@ namespace Library_Management_System.Forms
             rightpnl.Controls.Clear();
 
             regPnl = new Panel();
-            regPnl.Size = new Size(400, 550);
-
+            regPnl.Size = new Size(400, 450);
+            activePanel = regPnl;
             // Center the panel
             regPnl.Left = (rightpnl.Width - regPnl.Width) / 2;
             regPnl.Top = (rightpnl.Height - regPnl.Height) / 2;
@@ -258,18 +259,7 @@ namespace Library_Management_System.Forms
             y += 70;
 
             // --- Role ---
-            Label roleLabel = new Label { Text = "Role", Font = new Font("Segoe UI", 10, FontStyle.Bold), ForeColor = Color.Gray, AutoSize = true, Location = new Point(innerX, y) };
-            roleComboBox = new ComboBox
-            {
-                Name = "roleComboBox",
-                Location = new Point(innerX, y + 25),
-                Size = new Size(280, 30),
-                Font = new Font("Segoe UI", 11),
-                DropDownStyle = ComboBoxStyle.DropDownList
-            };
-            roleComboBox.Items.AddRange(new object[] { "student", "librarian" });
-            roleComboBox.SelectedIndex = 0;
-            y += 70;
+            
 
             // --- Register Button ---
             Button registerButton = new Button
@@ -309,8 +299,6 @@ namespace Library_Management_System.Forms
             regPnl.Controls.Add(regEmailTextBox);
             regPnl.Controls.Add(regPasswordLabel);
             regPnl.Controls.Add(regPasswordTextBox);
-            regPnl.Controls.Add(roleLabel);
-            regPnl.Controls.Add(roleComboBox);
             regPnl.Controls.Add(registerButton);
             regPnl.Controls.Add(lnkLogin);
 
@@ -322,7 +310,7 @@ namespace Library_Management_System.Forms
             string fullName = fullNameTextBox.Text;
             string email = regEmailTextBox.Text;
             string password = regPasswordTextBox.Text;
-            string role = roleComboBox.SelectedItem?.ToString();
+            string role = "Student";
 
             // Basic input validation
             if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(role))
