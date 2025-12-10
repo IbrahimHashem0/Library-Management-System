@@ -1,0 +1,5 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/The Project/Library Management System/packages/System.Data.SqlClient.4.9.0
