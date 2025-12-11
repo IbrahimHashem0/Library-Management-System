@@ -59,8 +59,14 @@
     <Compile Include="Forms\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\LoginView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Forms\MainDashBoard.cs">
       <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\RegisterView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Borrowing.cs" />

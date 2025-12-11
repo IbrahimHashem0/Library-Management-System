@@ -119,25 +119,25 @@ namespace Library_Management_System.Forms
             btnY += btnSpacing;
             sidebarPanel.Controls.Add(headerTitleLabel);
             // 1. Dashboard Button (Was 'Home')
-            dashboardBtn = CreateMenuButton("Dashboard");
+            dashboardBtn = CreateMenuButton("Home");
             dashboardBtn.Click += DashboardBtn_Click;
             sidebarPanel.Controls.Add(dashboardBtn);
             btnY += btnSpacing;
 
             // 2. Book Catalog Button (Was 'My Books')
-            catalogBtn = CreateMenuButton("Book Catalog");
+            catalogBtn = CreateMenuButton("My Books");
             catalogBtn.Click += CatalogBtn_Click;
             sidebarPanel.Controls.Add(catalogBtn);
             btnY += btnSpacing;
             
             // 3. My Loans Button (Was 'Favorites')
-            myLoansBtn = CreateMenuButton("My Loans");
+            myLoansBtn = CreateMenuButton("Favorites");
             myLoansBtn.Click += MyLoansBtn_Click;
             sidebarPanel.Controls.Add(myLoansBtn);
             btnY += btnSpacing;
 
             // 4. My Reservations Button (Was 'Notifications')
-            myReservationsBtn = CreateMenuButton("My Reservations");
+            myReservationsBtn = CreateMenuButton("Notifications");
             myReservationsBtn.Click += MyReservationsBtn_Click;
             sidebarPanel.Controls.Add(myReservationsBtn);
             btnY += btnSpacing;
