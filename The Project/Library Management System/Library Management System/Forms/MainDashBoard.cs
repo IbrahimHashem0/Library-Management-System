@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using Library_Management_System.Models;
+using Library_Management_System.Forms; // Needed for LoginForm
 
 namespace Library_Management_System.Forms
 {
@@ -17,6 +18,7 @@ namespace Library_Management_System.Forms
         private Label headerTitleLabel;
         private Label userLabel;
         private Label roleLabel;
+        private Label logoLabel; // Field for logo label
 
         // Content controls
         private DataGridView bookDataGridView;
@@ -25,7 +27,10 @@ namespace Library_Management_System.Forms
         // Menu Buttons
         // Renamed fields for clarity
         private Button dashboardBtn, catalogBtn, myLoansBtn, myReservationsBtn, billingBtn;
-        
+        // ***** BUTTONS FOR ADMIN/LIBRARIAN ROLES *****
+        private Button manageBooksBtn, manageUsersBtn; // Buttons for Admin/Librarian Management
+        private Button borrowingBtn; // New field for Borrowing button
+
         private const string SearchPlaceholderText = "Search by Title, Author, or ISBN...";
 
 
@@ -33,7 +38,101 @@ namespace Library_Management_System.Forms
         {
             _loggedInUser = user;
             InitializeComponent();
+            ApplyRoleBasedUI(); // Call the role customization logic
         }
+
+        // ***************************************************************
+        // *** CORE LOGIC: APPLY ROLE-BASED UI CUSTOMIZATION ***
+        // ***************************************************************
+
+        private void ApplyRoleBasedUI()
+        {
+            // Logic to determine roles and add/modify UI elements
+            string role = _loggedInUser.Role.ToLower();
+
+            // Update user info display
+            userLabel.Text = _loggedInUser?.FullName ?? "Guest User";
+            headerTitleLabel.Text = $"Hello, {userLabel.Text}!";
+
+            if (role == "admin" || role == "librarian")
+            {
+                this.Text = "LMS - Admin Dashboard";
+                logoLabel.Text = "LMS Admin";
+
+                // ----------------------------------------------------
+                // 1. Hide Reader-Specific Buttons
+                // ----------------------------------------------------
+                // Hide: My Books (catalogBtn), Favorites (myLoansBtn), Notifications (myReservationsBtn)
+                catalogBtn.Visible = false;
+                myLoansBtn.Visible = false;
+                myReservationsBtn.Visible = false;
+
+                // ----------------------------------------------------
+                // 2. Add/Position Admin/Librarian Buttons
+                // ----------------------------------------------------
+
+                // Calculate the starting Y position for the new buttons (after Dashboard Button)
+                int btnY = dashboardBtn.Location.Y + dashboardBtn.Height + 10; // Start after Dashboard button
+                int btnSpacing = 55; // Standard spacing
+
+                // Ensure the dashboard button text matches the requested look
+                dashboardBtn.Text = "Dashboard";
+
+                // --- BUTTON: Manage Book ---
+                manageBooksBtn = CreateMenuButton("Manage Book"); // Updated text
+                manageBooksBtn.Location = new Point(10, btnY);
+                manageBooksBtn.Click += ManageBooksBtn_Click;
+                sidebarPanel.Controls.Add(manageBooksBtn);
+                btnY += btnSpacing;
+
+                // --- BUTTON: Manage User ---
+                manageUsersBtn = CreateMenuButton("Manage User"); // Updated text
+                manageUsersBtn.Location = new Point(10, btnY);
+                manageUsersBtn.Click += ManageUsersBtn_Click;
+                sidebarPanel.Controls.Add(manageUsersBtn);
+                btnY += btnSpacing;
+
+                // --- BUTTON: Borrowing ---
+                borrowingBtn = CreateMenuButton("Borrowing"); // New button for loans management
+                borrowingBtn.Location = new Point(10, btnY);
+                borrowingBtn.Click += BorrowingBtn_Click;
+                sidebarPanel.Controls.Add(borrowingBtn);
+                btnY += btnSpacing;
+
+                // --- BUTTON: Bill (Repositioning existing billingBtn) ---
+                billingBtn.Text = "Bill"; // Updated text to match image
+                billingBtn.Location = new Point(10, btnY); // Repositioned
+                billingBtn.Visible = true; // Ensure it is visible and positioned last
+            }
+        }
+
+        // ***************************************************************
+        // *** HELPER METHOD FOR BUTTON CREATION ***
+        // ***************************************************************
+
+        private Button CreateMenuButton(string text)
+        {
+            // Helper method that replicates the button styling used in InitializeComponent
+            int btnHeight = 45; // Based on InitializeComponent
+
+            return new Button
+            {
+                Text = text,
+                Size = new Size(sidebarPanel.Width - 20, btnHeight),
+                FlatStyle = FlatStyle.Flat,
+                FlatAppearance = { BorderSize = 0, BorderColor = Color.FromArgb(79, 70, 229) },
+                BackColor = Color.FromArgb(79, 70, 229),
+                ForeColor = Color.White,
+                TextAlign = ContentAlignment.MiddleLeft,
+                Font = new Font("Segoe UI", 11, FontStyle.Bold),
+                Cursor = Cursors.Hand,
+                Tag = text.Replace(" ", "")
+            };
+        }
+
+        // ***************************************************************
+        // *** INITIALIZE COMPONENT (START OF UI CONSTRUCTION) ***
+        // ***************************************************************
 
         public void InitializeComponent()
         {
@@ -41,8 +140,8 @@ namespace Library_Management_System.Forms
             this.ClientSize = new Size(1200, 750);
             this.Name = "MainDashBoard";
             this.StartPosition = FormStartPosition.CenterScreen;
-            this.BackColor = Color.FromArgb(79, 70, 229); 
-            
+            this.BackColor = Color.FromArgb(79, 70, 229);
+
             this.SuspendLayout();
 
             // 1. Sidebar Panel (Left Side - Green/Teal)
@@ -50,13 +149,13 @@ namespace Library_Management_System.Forms
             {
                 Dock = DockStyle.Left,
                 Width = 265,
-                BackColor = Color.FromArgb(79, 70, 229), 
+                BackColor = Color.FromArgb(79, 70, 229),
                 Padding = new Padding(10),
             };
             this.Controls.Add(sidebarPanel);
 
-            
-          
+
+
             // 3. Content Panel (Main Body - WhiteSmoke)
             contentPanel = new Panel
             {
@@ -71,7 +170,8 @@ namespace Library_Management_System.Forms
             // Sidebar Contents (Reader Menu)
             // ----------------------------------------------------
 
-            Label logoLabel = new Label
+            // *** FIX: Assigning to the Field variable logoLabel ***
+            logoLabel = new Label
             {
                 Text = "LMS Reader",
                 Font = new Font("Segoe UI", 20, FontStyle.Bold),
@@ -81,11 +181,11 @@ namespace Library_Management_System.Forms
             };
             sidebarPanel.Controls.Add(logoLabel);
 
-            int btnY = 120; 
+            int btnY = 120;
             int btnHeight = 45;
             int btnSpacing = 55;
 
-            Func<string, Button> CreateMenuButton = (text) => new Button
+            Func<string, Button> LocalCreateMenuButton = (text) => new Button
             {
                 Text = text,
                 Location = new Point(10, btnY),
@@ -97,8 +197,9 @@ namespace Library_Management_System.Forms
                 TextAlign = ContentAlignment.MiddleLeft,
                 Font = new Font("Segoe UI", 11, FontStyle.Bold),
                 Cursor = Cursors.Hand,
-                Tag = text.Replace(" ", "") 
+                Tag = text.Replace(" ", "")
             };
+
             userLabel = new Label
             {
                 Text = _loggedInUser?.FullName ?? "Guest User",
@@ -107,10 +208,10 @@ namespace Library_Management_System.Forms
                 Location = new Point(10, 80), // Positioned below the logo
                 AutoSize = true
             };
-            
+
             headerTitleLabel = new Label
             {
-                Text = "Hello, "+userLabel.Text+" !",
+                Text = "Hello, " + userLabel.Text + " !",
                 Font = new Font("Segoe UI", 16, FontStyle.Bold),
                 ForeColor = Color.Black,
                 Location = new Point(10, 90),
@@ -118,44 +219,45 @@ namespace Library_Management_System.Forms
             };
             btnY += btnSpacing;
             sidebarPanel.Controls.Add(headerTitleLabel);
+
             // 1. Dashboard Button (Was 'Home')
-            dashboardBtn = CreateMenuButton("Home");
+            dashboardBtn = LocalCreateMenuButton("Home");
             dashboardBtn.Click += DashboardBtn_Click;
             sidebarPanel.Controls.Add(dashboardBtn);
             btnY += btnSpacing;
 
             // 2. Book Catalog Button (Was 'My Books')
-            catalogBtn = CreateMenuButton("My Books");
+            catalogBtn = LocalCreateMenuButton("My Books");
             catalogBtn.Click += CatalogBtn_Click;
             sidebarPanel.Controls.Add(catalogBtn);
             btnY += btnSpacing;
-            
+
             // 3. My Loans Button (Was 'Favorites')
-            myLoansBtn = CreateMenuButton("Favorites");
+            myLoansBtn = LocalCreateMenuButton("Favorites");
             myLoansBtn.Click += MyLoansBtn_Click;
             sidebarPanel.Controls.Add(myLoansBtn);
             btnY += btnSpacing;
 
             // 4. My Reservations Button (Was 'Notifications')
-            myReservationsBtn = CreateMenuButton("Notifications");
+            myReservationsBtn = LocalCreateMenuButton("Notifications");
             myReservationsBtn.Click += MyReservationsBtn_Click;
             sidebarPanel.Controls.Add(myReservationsBtn);
             btnY += btnSpacing;
-            
+
             // 5. Billing Button
-            billingBtn = CreateMenuButton("Billing"); 
+            billingBtn = LocalCreateMenuButton("Billing");
             billingBtn.Click += BillingBtn_Click;
             sidebarPanel.Controls.Add(billingBtn);
             btnY += btnSpacing;
 
 
-            // Logout Button 
+            // Logout Button
             Button logoutBtn = new Button
             {
                 Text = "LOGOUT", // Using uppercase for consistency with the LOGIN button in the form
-                Location = new Point(10, this.ClientSize.Height - 80), 
+                Location = new Point(10, this.ClientSize.Height - 80),
                 Size = new Size(sidebarPanel.Width - 20, 40),
-                BackColor = Color.FromArgb(79, 70, 229), 
+                BackColor = Color.FromArgb(79, 70, 229),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 FlatAppearance = { BorderSize = 0 },
@@ -165,30 +267,23 @@ namespace Library_Management_System.Forms
             };
             logoutBtn.Click += LogoutBtn_Click;
             sidebarPanel.Controls.Add(logoutBtn);
-            logoutBtn.BringToFront(); 
+            logoutBtn.BringToFront();
 
-
-            // ----------------------------------------------------
-            // Header Contents (User Info)
-            // ----------------------------------------------------
-
-            
-           
             // ----------------------------------------------------
             // Finalization
             // ----------------------------------------------------
-            
+
             this.Load += new System.EventHandler(this.MainDashBoard_Load);
-            this.Resize += (s, e) => { 
-                logoutBtn.Location = new Point(10, this.ClientSize.Height - 80); 
+            this.Resize += (s, e) => {
+                logoutBtn.Location = new Point(10, this.ClientSize.Height - 80);
                 if (searchTextBox != null && searchTextBox.Parent != null)
                 {
                     searchTextBox.Size = new Size(searchTextBox.Parent.Width - 120, 30);
                 }
             };
-            
+
             this.ResumeLayout(false);
-            
+
             // Start on the Book Catalog view
             catalogBtn.PerformClick();
         }
@@ -203,27 +298,27 @@ namespace Library_Management_System.Forms
         private void SetupCatalogView()
         {
             contentPanel.Controls.Clear();
-            
+
             Panel searchPanel = new Panel
             {
                 Dock = DockStyle.Top,
                 Height = 40,
                 Padding = new Padding(0, 5, 0, 5)
             };
-            
+
             searchTextBox = new TextBox
             {
                 Location = new Point(0, 0),
                 Size = new Size(contentPanel.Width - 120, 30),
                 Font = new Font("Segoe UI", 11)
             };
-            
+
             // Manual Placeholder Implementation
             searchTextBox.Text = SearchPlaceholderText;
-            searchTextBox.ForeColor = Color.Gray; 
-            searchTextBox.GotFocus += SearchTextBox_Enter; 
-            searchTextBox.LostFocus += SearchTextBox_Leave; 
-            
+            searchTextBox.ForeColor = Color.Gray;
+            searchTextBox.GotFocus += SearchTextBox_Enter;
+            searchTextBox.LostFocus += SearchTextBox_Leave;
+
             searchPanel.Controls.Add(searchTextBox);
 
             Button searchButton = new Button
@@ -231,7 +326,7 @@ namespace Library_Management_System.Forms
                 Text = "Search",
                 Location = new Point(contentPanel.Width - 110, 0),
                 Size = new Size(100, 30),
-                BackColor = Color.FromArgb(79, 70, 229), 
+                BackColor = Color.FromArgb(79, 70, 229),
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 FlatAppearance = { BorderSize = 0 },
@@ -241,7 +336,7 @@ namespace Library_Management_System.Forms
             };
             searchButton.Click += SearchButton_Click;
             searchPanel.Controls.Add(searchButton);
-            
+
             contentPanel.Controls.Add(searchPanel);
             searchPanel.BringToFront();
 
@@ -255,10 +350,11 @@ namespace Library_Management_System.Forms
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.None,
                 ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None,
-                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle { 
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold), 
-                    BackColor = Color.FromArgb(79, 70, 229), 
-                    ForeColor = Color.Black 
+                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    BackColor = Color.FromArgb(79, 70, 229),
+                    ForeColor = Color.Black
                 },
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
             };
@@ -267,17 +363,17 @@ namespace Library_Management_System.Forms
             bookDataGridView.Columns.Add("Author", "Author");
             bookDataGridView.Columns.Add("ISBN", "ISBN");
             bookDataGridView.Columns.Add("Available", "Available Copies");
-            
+
             contentPanel.Controls.Add(bookDataGridView);
             bookDataGridView.BringToFront();
-            
+
             searchPanel.BringToFront();
         }
-        
+
         private void SetupBillingView()
         {
             contentPanel.Controls.Clear();
-            
+
             Label panelHeader = new Label
             {
                 Text = "My Bills",
@@ -300,14 +396,14 @@ namespace Library_Management_System.Forms
                 BackgroundColor = Color.White,
                 BorderStyle = BorderStyle.None,
                 GridColor = Color.LightGray,
-                
+
                 ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single,
                 ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
                 ColumnHeadersHeight = 40,
                 ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-                { 
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold), 
-                    BackColor = Color.White, 
+                {
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    BackColor = Color.White,
                     ForeColor = Color.Black,
                     Alignment = DataGridViewContentAlignment.MiddleLeft,
                     Padding = new Padding(8, 0, 0, 0)
@@ -320,12 +416,12 @@ namespace Library_Management_System.Forms
                 RowTemplate = { Height = 40 },
                 SelectionMode = DataGridViewSelectionMode.FullRowSelect,
             };
-            
+
             billingDataGridView.Columns.Add("InvoiceID", "Invoice ID");
             billingDataGridView.Columns.Add("BookTitle", "Book Title");
             billingDataGridView.Columns.Add("Date", "Date");
             billingDataGridView.Columns.Add("Price", "Price");
-            
+
             DataGridViewTextBoxColumn statusColumn = new DataGridViewTextBoxColumn();
             statusColumn.Name = "Status";
             statusColumn.HeaderText = "Status";
@@ -333,9 +429,74 @@ namespace Library_Management_System.Forms
             billingDataGridView.Columns.Add(statusColumn);
 
             contentPanel.Controls.Add(billingDataGridView);
-            billingDataGridView.BringToFront(); 
+            billingDataGridView.BringToFront();
 
-         
+
+            billingDataGridView.CellPainting += BillingDataGridView_CellPainting;
+        }
+
+        private void SetupAdminBillingView()
+        {
+            contentPanel.Controls.Clear();
+
+            Label panelHeader = new Label
+            {
+                Text = "Manage All Bills", // ADMIN TITLE (Different from "My Bills")
+                Font = new Font("Segoe UI", 24, FontStyle.Bold),
+                ForeColor = Color.Black,
+                Dock = DockStyle.Top,
+                AutoSize = false,
+                Height = 60,
+                TextAlign = ContentAlignment.BottomLeft
+            };
+            contentPanel.Controls.Add(panelHeader);
+
+            DataGridView billingDataGridView = new DataGridView
+            {
+                Dock = DockStyle.Fill,
+                ReadOnly = true,
+                AllowUserToAddRows = false,
+                AllowUserToDeleteRows = false,
+                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
+                BackgroundColor = Color.White,
+                BorderStyle = BorderStyle.None,
+                GridColor = Color.LightGray,
+
+                ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.Single,
+                ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing,
+                ColumnHeadersHeight = 40,
+                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                    BackColor = Color.White,
+                    ForeColor = Color.Black,
+                    Alignment = DataGridViewContentAlignment.MiddleLeft,
+                    Padding = new Padding(8, 0, 0, 0)
+                },
+                DefaultCellStyle = new DataGridViewCellStyle
+                {
+                    Font = new Font("Segoe UI", 10),
+                    Padding = new Padding(8, 0, 0, 0)
+                },
+                RowTemplate = { Height = 40 },
+                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
+            };
+
+            billingDataGridView.Columns.Add("InvoiceID", "Invoice ID");
+            billingDataGridView.Columns.Add("BookTitle", "Book Title");
+            billingDataGridView.Columns.Add("Date", "Date");
+            billingDataGridView.Columns.Add("Price", "Price");
+
+            DataGridViewTextBoxColumn statusColumn = new DataGridViewTextBoxColumn();
+            statusColumn.Name = "Status";
+            statusColumn.HeaderText = "Status";
+            statusColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCells;
+            billingDataGridView.Columns.Add(statusColumn);
+
+            contentPanel.Controls.Add(billingDataGridView);
+            billingDataGridView.BringToFront();
+
+
             billingDataGridView.CellPainting += BillingDataGridView_CellPainting;
         }
 
@@ -351,7 +512,7 @@ namespace Library_Management_System.Forms
             }
         }
 
-      
+
         #endregion
 
         #region Custom Placeholder Handlers
@@ -373,14 +534,14 @@ namespace Library_Management_System.Forms
                 searchTextBox.ForeColor = Color.Gray;
             }
         }
-        
+
         #endregion
 
         #region Custom Status Cell Painting
 
         private void BillingDataGridView_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
-            if (e.ColumnIndex == 4 && e.RowIndex >= 0) 
+            if (e.ColumnIndex == 4 && e.RowIndex >= 0)
             {
                 string status = e.Value?.ToString();
                 Color backColor;
@@ -392,7 +553,7 @@ namespace Library_Management_System.Forms
                         backColor = Color.FromArgb(40, 167, 69); // Green
                         break;
                     case "Overdue":
-                        backColor = Color.FromArgb(220, 53, 69); // Red  
+                        backColor = Color.FromArgb(220, 53, 69); // Red
                         break;
                     case "Pending":
                         backColor = Color.FromArgb(108, 117, 125); // Gray/Secondary
@@ -403,22 +564,19 @@ namespace Library_Management_System.Forms
                         return;
                 }
 
-                // Replace this line inside BillingDataGridView_CellPainting:
-                // e.PaintBackground(e.CellBounds, e.RowState);
-
                 // With this line:
                 e.PaintBackground(e.CellBounds, (e.State & DataGridViewElementStates.Selected) == DataGridViewElementStates.Selected);
-                
-                
+
+
                 int horizontalPadding = 10;
                 int verticalPadding = 6;
                 Rectangle pillRect = new Rectangle(
-                    e.CellBounds.X + horizontalPadding, 
-                    e.CellBounds.Y + verticalPadding, 
-                    e.CellBounds.Width - (horizontalPadding * 2), 
+                    e.CellBounds.X + horizontalPadding,
+                    e.CellBounds.Y + verticalPadding,
+                    e.CellBounds.Width - (horizontalPadding * 2),
                     e.CellBounds.Height - (verticalPadding * 2)
                 );
-                
+
                 using (SolidBrush brush = new SolidBrush(backColor))
                 {
                     e.Graphics.FillRectangle(brush, pillRect);
@@ -472,11 +630,23 @@ namespace Library_Management_System.Forms
             Label tempLabel = new Label { Text = "Your active reservations list will be displayed here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
             contentPanel.Controls.Add(tempLabel);
         }
-        
+
         private void BillingBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "My Bills";
-            SetupBillingView();
+            string role = _loggedInUser.Role.ToLower();
+
+            if (role == "admin" || role == "librarian")
+            {
+                // Admin/Librarian view: Manage all bills
+                headerTitleLabel.Text = "Manage System Bills";
+                SetupAdminBillingView(); // NEW Admin view setup (See implementation below)
+            }
+            else
+            {
+                // Reader/Student view: View personal bills
+                headerTitleLabel.Text = "My Bills";
+                SetupBillingView(); // Existing Reader view setup
+            }
         }
 
         private void SearchButton_Click(object sender, EventArgs e)
@@ -498,7 +668,7 @@ namespace Library_Management_System.Forms
             {
                 this.Show();
 
-                
+
             }
             else
             {
@@ -507,6 +677,37 @@ namespace Library_Management_System.Forms
 
 
         }
+
+        // ***** START OF ADMIN EVENT HANDLERS *****
+
+        private void ManageBooksBtn_Click(object sender, EventArgs e)
+        {
+            headerTitleLabel.Text = "Manage Books";
+            contentPanel.Controls.Clear();
+            Label tempLabel = new Label { Text = "Form for adding/editing books goes here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
+            contentPanel.Controls.Add(tempLabel);
+        }
+
+        private void ManageUsersBtn_Click(object sender, EventArgs e)
+        {
+            headerTitleLabel.Text = "Manage Users";
+            contentPanel.Controls.Clear();
+            Label tempLabel = new Label { Text = "Form for managing user roles/accounts goes here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
+            contentPanel.Controls.Add(tempLabel);
+        }
+
+        private void BorrowingBtn_Click(object sender, EventArgs e)
+        {
+            headerTitleLabel.Text = "Borrowing && Returns";
+            //headerTitleLabel.Font = new Font("Segoe UI", 12, FontStyle.Bold);
+
+            contentPanel.Controls.Clear();
+            // This view will contain the UI for issuing and returning books.
+            Label tempLabel = new Label { Text = "Borrowing and Return Management Form is ready!", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
+            contentPanel.Controls.Add(tempLabel);
+        }
+
+        // ***** END OF ADMIN EVENT HANDLERS *****
 
         #endregion
     }

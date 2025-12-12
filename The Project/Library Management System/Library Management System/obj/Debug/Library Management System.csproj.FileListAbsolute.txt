@@ -28,3 +28,18 @@ D:\FCI T3 T1\Visual Programming\New folder\TechNoovaa\Library-Management-System\
 D:\FCI T3 T1\Visual Programming\New folder\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.pdb
 D:\FCI T3 T1\Visual Programming\New folder\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.MainDashBoard.resources
 C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.MainDashBoard.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\bin\Debug\Library Management System.exe.config
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\bin\Debug\Library Management System.exe
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\bin\Debug\Library Management System.pdb
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\bin\Debug\System.Data.SqlClient.dll
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\bin\Debug\System.Data.SqlClient.xml
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.csproj.AssemblyReference.cache
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.LoginForm.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.MainDashBoard.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Properties.Resources.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.csproj.GenerateResource.cache
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.csproj.CoreCompileInputs.cache
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library .F7D87690.Up2Date
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.exe
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.pdb
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.exe.config
