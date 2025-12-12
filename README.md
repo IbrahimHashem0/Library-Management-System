@@ -23,6 +23,6 @@ This project aims to simplify the process of managing books, users, and borrowin
 | **Language** | C# |
 | **Framework** | .NET / Windows Forms |
 | **IDE** | Visual Studio |
-| **Database** | MySQL |
+| **Database** | SQL Server |
 | **UI Design** | Windows Forms Designer |
 
