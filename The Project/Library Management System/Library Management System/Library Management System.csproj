@@ -68,11 +68,18 @@
     <Compile Include="Forms\RegisterView.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="Forms\AdminDashboardView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\AdminDashboardView.Designer.cs">
+      <DependentUpon>AdminDashboardView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Borrowing.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\AdminDashboardRepository.cs" />
     <Compile Include="Repositories\BookRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\SecurityService.cs" />

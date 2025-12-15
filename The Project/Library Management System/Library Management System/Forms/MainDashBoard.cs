@@ -600,12 +600,18 @@ namespace Library_Management_System.Forms
 
         #region Menu Click Event Handlers
 
-        private void DashboardBtn_Click(object sender, EventArgs e)
+        private void DashboardBtn_Click(object sender , EventArgs e)
         {
             headerTitleLabel.Text = "Dashboard Overview";
+
             contentPanel.Controls.Clear();
-            Label tempLabel = new Label { Text = "Welcome! This is your main Dashboard.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
-            contentPanel.Controls.Add(tempLabel);
+
+            if (_loggedInUser.Role.ToLower() == "admin")
+            {
+                AdminDashboardView dashboard = new AdminDashboardView();
+                contentPanel.Controls.Add(dashboard);
+                dashboard.Dock = DockStyle.Fill;
+            }
         }
 
         private void CatalogBtn_Click(object sender, EventArgs e)
