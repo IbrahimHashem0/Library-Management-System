@@ -9,16 +9,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+
 
 namespace Library_Management_System.Forms
 {
     public partial class ReaderHomeView : UserControl
     {
+        private const int EM_SETCUEBANNER = 0x1501;
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern Int32 SendMessage(IntPtr hWnd, int msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+        // ------------------------------------------
+
         private FlowLayoutPanel gridPanel;
-        private TextBox searchBox; // Keep reference to read text later
+        private TextBox searchBox; 
         private const string PlaceholderText = "Search book by title or author...";
         private List<Button> categoryButtons = new List<Button>();
         private int currentCategoryId = 0;
+
         public ReaderHomeView()
         {
             InitializeComponent();
@@ -29,10 +37,10 @@ namespace Library_Management_System.Forms
         private void Initialize()
         {
             this.Dock = DockStyle.Fill;
-            this.BackColor = Color.White;
+            this.BackColor = Color.WhiteSmoke;
 
             // --- 1. Top Section (Search & Filter) ---
-            Panel topPanel = new Panel { Dock = DockStyle.Top, Height = 130, BackColor = Color.White, Padding = new Padding(20) };
+            Panel topPanel = new Panel { Dock = DockStyle.Top, Height = 130, BackColor = Color.WhiteSmoke, Padding = new Padding(20) };
 
             // Search Bar
             Panel searchContainer = new Panel { Size = new Size(600, 40), Location = new Point(20, 20), BackColor = Color.White };
@@ -43,19 +51,21 @@ namespace Library_Management_System.Forms
                 Font = new Font("Segoe UI", 12),
                 Location = new Point(15, 10),
                 Width = 500,
-                Text = PlaceholderText,
-                ForeColor = Color.Gray
+                // Text = PlaceholderText,
+
+                ForeColor = Color.Black
             };
-            searchBox.TextChanged += (s, e) => {
+            searchBox.TextChanged += (s, e) =>
+            {
                 // 1. If the text matches the placeholder, treat it as empty (Show All)
                 // 2. Otherwise, search for whatever the user typed
                 string searchTerm = searchBox.Text == PlaceholderText ? "" : searchBox.Text;
 
                 LoadBooksFromDatabase(searchTerm, currentCategoryId);
             };
-            // Search Placeholder Logic
-            searchBox.GotFocus += (s, e) => { if (searchBox.Text == PlaceholderText) { searchBox.Text = ""; searchBox.ForeColor = Color.Black; } };
-            
+
+            SendMessage(searchBox.Handle, EM_SETCUEBANNER, 1, "Search book by title or author...");
+
             // Search Button Logic
             Button searchIcon = new Button { Text = "🔍", Dock = DockStyle.Right, Width = 50, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(79, 70, 229), ForeColor = Color.White, Cursor = Cursors.Hand };
             searchIcon.Click += (s, e) => LoadBooksFromDatabase(searchBox.Text == PlaceholderText ? "" : searchBox.Text, currentCategoryId);
@@ -102,25 +112,68 @@ namespace Library_Management_System.Forms
             topPanel.Controls.Add(filterPanel);
             this.Controls.Add(topPanel);
 
-            // --- 2. Grid Section (Flow Layout) ---
-            Label sectionTitle = new Label { Text = "Trending Books", Font = new Font("Segoe UI", 18, FontStyle.Bold), Location = new Point(20, 130), AutoSize = true };
-            topPanel.Height += 40; // Adjust height for title
+            
+            Label sectionTitle = new Label {
+                Text = "Trending Books",
+                Font = new Font("Segoe UI", 18, FontStyle.Bold),
+                Location = new Point(20, 130),
+                AutoSize = true
+            };
+
             topPanel.Controls.Add(sectionTitle);
+            this.Controls.Add(topPanel);
+
+           
+            Panel scrollContainer = new Panel
+            {
+                Dock = DockStyle.Fill,
+                AutoScroll = true, // This panel handles the scrollbar now
+                BackColor = Color.WhiteSmoke,
+                Padding = new Padding(20) // Add padding here for the edges
+            };
+
 
             gridPanel = new FlowLayoutPanel
             {
-                Dock = DockStyle.Fill,
-                AutoScroll = true,
-                Padding = new Padding(20),
-                BackColor = Color.White
+                Dock = DockStyle.Top, // Sticks to the top of the container
+                AutoSize = true,      // GROWS vertically as you add books
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                BackColor = Color.WhiteSmoke
             };
-            this.Controls.Add(gridPanel);
-            gridPanel.BringToFront();
+
+            // Connect them
+            scrollContainer.Controls.Add(gridPanel); // Put grid INSIDE scroll container
+            this.Controls.Add(scrollContainer);      // Put scroll container on the form
+            scrollContainer.BringToFront();
         }
 
+        private string GetCoverPath(string ISBN)
+        {
+            // 1. Define Default
+            string Image = $"{ISBN}.jpg";
+            string localFilePath = System.IO.Path.Combine(Application.StartupPath, "book_covers", Image);
 
+            
+
+            // 2. Check if the local file exists
+            if (System.IO.File.Exists(localFilePath))
+            {
+                Image = localFilePath; // Use local file
+            }
+            else
+            {
+                // 3. Fallback to OpenLibrary if local file is missing
+                
+                    Image = $"https://covers.openlibrary.org/b/isbn/{ISBN}-L.jpg";
+                
+                
+            }
+
+            return Image;
+        }
         private void LoadBooksFromDatabase(string searchTerm = "", int ID = 0)
         {
+            gridPanel.SuspendLayout();
             gridPanel.Controls.Clear(); // Clear old cards
             
             try
@@ -144,14 +197,16 @@ namespace Library_Management_System.Forms
                             .Where(b => b.CategoryID == ID)
                             .ToList();
                 }
+
+                filteredBooks = filteredBooks
+            .OrderBy(b => b.Title) // Sorts A -> Z
+            .ToList();
                 // Create a card for each book
                 foreach (var book in filteredBooks)
                 {
-                    // Since DB has no Image column, use a placeholder based on ID
-                    // This creates a consistent fake image URL or you can use a local resource
-                    string placeholderImg = "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=200";
+                    
 
-                    AddCard(book, placeholderImg);
+                    AddCard(book, GetCoverPath(book.ISBN));
                 }
 
                 if (filteredBooks.Count == 0)
@@ -164,6 +219,7 @@ namespace Library_Management_System.Forms
             {
                 MessageBox.Show("Error loading books: " + ex.Message);
             }
+            gridPanel.ResumeLayout();
         }
 
         private void AddCard(Book book, string imgUrl)

@@ -160,7 +160,7 @@ namespace Library_Management_System.Forms
             contentPanel = new Panel
             {
                 Dock = DockStyle.Fill,
-                BackColor = Color.White,
+                BackColor = Color.WhiteSmoke,
                 Padding = new Padding(20),
             };
             this.Controls.Add(contentPanel);
@@ -228,13 +228,13 @@ namespace Library_Management_System.Forms
 
             // 2. Book Catalog Button (Was 'My Books')
             catalogBtn = LocalCreateMenuButton("My Books");
-            catalogBtn.Click += CatalogBtn_Click;
+            catalogBtn.Click += BorrowedBooksBtn_Click;
             sidebarPanel.Controls.Add(catalogBtn);
             btnY += btnSpacing;
 
             // 3. My Loans Button (Was 'Favorites')
             myLoansBtn = LocalCreateMenuButton("Favorites");
-            myLoansBtn.Click += MyLoansBtn_Click;
+            myLoansBtn.Click += FavoriteBtn_Click;
             sidebarPanel.Controls.Add(myLoansBtn);
             btnY += btnSpacing;
 
@@ -295,80 +295,8 @@ namespace Library_Management_System.Forms
 
         #region UI Setup and Event Handlers
 
-        private void SetupCatalogView()
-        {
-            contentPanel.Controls.Clear();
+       
 
-            Panel searchPanel = new Panel
-            {
-                Dock = DockStyle.Top,
-                Height = 40,
-                Padding = new Padding(0, 5, 0, 5)
-            };
-
-            searchTextBox = new TextBox
-            {
-                Location = new Point(0, 0),
-                Size = new Size(contentPanel.Width - 120, 30),
-                Font = new Font("Segoe UI", 11)
-            };
-
-            // Manual Placeholder Implementation
-            searchTextBox.Text = SearchPlaceholderText;
-            searchTextBox.ForeColor = Color.Gray;
-            searchTextBox.GotFocus += SearchTextBox_Enter;
-            searchTextBox.LostFocus += SearchTextBox_Leave;
-
-            searchPanel.Controls.Add(searchTextBox);
-
-            Button searchButton = new Button
-            {
-                Text = "Search",
-                Location = new Point(contentPanel.Width - 110, 0),
-                Size = new Size(100, 30),
-                BackColor = Color.FromArgb(79, 70, 229),
-                ForeColor = Color.White,
-                FlatStyle = FlatStyle.Flat,
-                FlatAppearance = { BorderSize = 0 },
-                Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                Cursor = Cursors.Hand,
-                Anchor = AnchorStyles.Right
-            };
-            searchButton.Click += SearchButton_Click;
-            searchPanel.Controls.Add(searchButton);
-
-            contentPanel.Controls.Add(searchPanel);
-            searchPanel.BringToFront();
-
-            bookDataGridView = new DataGridView
-            {
-                Dock = DockStyle.Fill,
-                Location = new Point(0, searchPanel.Height),
-                ReadOnly = true,
-                AllowUserToAddRows = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.None,
-                ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None,
-                ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle
-                {
-                    Font = new Font("Segoe UI", 10, FontStyle.Bold),
-                    BackColor = Color.FromArgb(79, 70, 229),
-                    ForeColor = Color.Black
-                },
-                SelectionMode = DataGridViewSelectionMode.FullRowSelect,
-            };
-
-            bookDataGridView.Columns.Add("Title", "Title");
-            bookDataGridView.Columns.Add("Author", "Author");
-            bookDataGridView.Columns.Add("ISBN", "ISBN");
-            bookDataGridView.Columns.Add("Available", "Available Copies");
-
-            contentPanel.Controls.Add(bookDataGridView);
-            bookDataGridView.BringToFront();
-
-            searchPanel.BringToFront();
-        }
 
         private void SetupBillingView()
         {
@@ -500,17 +428,7 @@ namespace Library_Management_System.Forms
             billingDataGridView.CellPainting += BillingDataGridView_CellPainting;
         }
 
-        private void LoadBookCatalog(string searchTerm = "")
-        {
-            if (bookDataGridView != null)
-            {
-                bookDataGridView.Rows.Clear();
-                // --- Placeholder Data ---
-                bookDataGridView.Rows.Add("The Catcher in the Rye", "J.D. Salinger", "978-0316769174", "3");
-                bookDataGridView.Rows.Add("To Kill a Mockingbird", "Harper Lee", "978-0061120084", "5");
-                bookDataGridView.Rows.Add("1984", "George Orwell", "978-0451524935", "1");
-            }
-        }
+
 
 
         #endregion
@@ -621,18 +539,21 @@ namespace Library_Management_System.Forms
             }
         }
 
-        private void CatalogBtn_Click(object sender, EventArgs e)
+        private void BorrowedBooksBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "Books";
-            SetupCatalogView();
-            LoadBookCatalog();
+            headerTitleLabel.Text = "Borrowed Books";
+
+            MyBorrowedBooksView view = new MyBorrowedBooksView();
+            contentPanel.Controls.Clear();
+            contentPanel.Controls.Add(view);
+            view.Dock = DockStyle.Fill;
         }
 
-        private void MyLoansBtn_Click(object sender, EventArgs e)
+        private void FavoriteBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "My Current Borrower Books";
+            headerTitleLabel.Text = "My Favorite Books";
             contentPanel.Controls.Clear();
-            Label tempLabel = new Label { Text = "Your currently borrowed books will be shown here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
+            Label tempLabel = new Label { Text = "Your favorite books will be shown here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
             contentPanel.Controls.Add(tempLabel);
         }
 
@@ -662,11 +583,7 @@ namespace Library_Management_System.Forms
             }
         }
 
-        private void SearchButton_Click(object sender, EventArgs e)
-        {
-            string searchTerm = searchTextBox.Text != SearchPlaceholderText ? searchTextBox.Text : "";
-            LoadBookCatalog(searchTerm);
-        }
+
 
         private void LogoutBtn_Click(object sender, EventArgs e)
         {

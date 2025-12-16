@@ -89,6 +89,12 @@
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\Borrowing.cs" />
     <Compile Include="Models\Category.cs" />
+    <Compile Include="Models\MyBorrowedBooksView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Models\MyBorrowedBooksView.Designer.cs">
+      <DependentUpon>MyBorrowedBooksView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
