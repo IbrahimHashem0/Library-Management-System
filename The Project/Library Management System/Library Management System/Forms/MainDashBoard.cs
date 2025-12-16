@@ -612,18 +612,25 @@ namespace Library_Management_System.Forms
                 contentPanel.Controls.Add(dashboard);
                 dashboard.Dock = DockStyle.Fill;
             }
+            else
+            {
+                ReaderHomeView view = new ReaderHomeView();
+                contentPanel.Controls.Clear();
+                contentPanel.Controls.Add(view);
+                view.Dock = DockStyle.Fill;
+            }
         }
 
         private void CatalogBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "Book Catalog";
+            headerTitleLabel.Text = "Books";
             SetupCatalogView();
             LoadBookCatalog();
         }
 
         private void MyLoansBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "My Current Loans";
+            headerTitleLabel.Text = "My Current Borrower Books";
             contentPanel.Controls.Clear();
             Label tempLabel = new Label { Text = "Your currently borrowed books will be shown here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
             contentPanel.Controls.Add(tempLabel);
@@ -631,7 +638,7 @@ namespace Library_Management_System.Forms
 
         private void MyReservationsBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "My Active Reservations";
+            headerTitleLabel.Text = "Notifications";
             contentPanel.Controls.Clear();
             Label tempLabel = new Label { Text = "Your active reservations list will be displayed here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
             contentPanel.Controls.Add(tempLabel);
