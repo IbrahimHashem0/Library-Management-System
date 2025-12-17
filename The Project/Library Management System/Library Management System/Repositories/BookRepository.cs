@@ -80,5 +80,43 @@ namespace Library_Management_System.Repositories
                 }
             }
         }
+
+        // search Books by Title or Author
+        public List<Book> SearchBooks(string searchTerm)
+        {
+            var list = new List<Book>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = @"SELECT * FROM Books 
+                         WHERE Title LIKE @term OR Author LIKE @term OR ISBN LIKE @term";
+
+                using (var cmd = new SqlCommand(query , conn))
+                {
+                    cmd.Parameters.AddWithValue("@term" , "%" + searchTerm + "%");
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new Book
+                            {
+                                BookID = (int)reader["BookID"] ,
+                                Title = reader["Title"].ToString() ,
+                                Author = reader["Author"].ToString() ,
+                                ISBN = reader["ISBN"].ToString() ,
+                                Publisher = reader["Publisher"].ToString() ,
+                                Year = reader["Year"] as int? ,
+                                CategoryID = reader["CategoryID"] != DBNull.Value ? (int)reader["CategoryID"] : 0 ,
+                                TotalCopies = (int)reader["TotalCopies"] ,
+                                AvailableCopies = (int)reader["AvailableCopies"]
+                            });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
     }
 }

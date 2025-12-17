@@ -619,8 +619,8 @@ namespace Library_Management_System.Forms
         {
             headerTitleLabel.Text = "Manage Books";
             contentPanel.Controls.Clear();
-            Label tempLabel = new Label { Text = "Form for adding/editing books goes here.", Font = new Font("Segoe UI", 16), AutoSize = true, Location = new Point(50, 50) };
-            contentPanel.Controls.Add(tempLabel);
+            ManageBooksView view = new ManageBooksView();
+            contentPanel.Controls.Add(view);
         }
 
         private void ManageUsersBtn_Click(object sender, EventArgs e)
