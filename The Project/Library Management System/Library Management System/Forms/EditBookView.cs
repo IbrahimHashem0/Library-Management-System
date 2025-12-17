@@ -40,6 +40,7 @@ namespace Library_Management_System.Forms
                 Text = "Edit Book" ,
                 Font = new Font("Segoe UI" , 20 , FontStyle.Bold) ,
                 Location = new Point(20 , 20) ,
+                ForeColor = Color.FromArgb(63 , 81 , 181) ,
                 AutoSize = true
             };
             this.Controls.Add(header);
