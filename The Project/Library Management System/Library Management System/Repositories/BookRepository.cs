@@ -65,5 +65,20 @@ namespace Library_Management_System.Repositories
                 }
             }
         }
+
+        // delete a Book (For Admins)
+        public void DeleteBook(int bookId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = "DELETE FROM Books WHERE BookID = @BookID";
+                using (var cmd = new SqlCommand(query , conn))
+                {
+                    cmd.Parameters.AddWithValue("@BookID" , bookId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
