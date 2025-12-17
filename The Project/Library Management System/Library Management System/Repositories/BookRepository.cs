@@ -118,5 +118,76 @@ namespace Library_Management_System.Repositories
             return list;
         }
 
+        //update Book Details
+        public void UpdateBook(Book book)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                string query = @"
+            UPDATE Books 
+            SET 
+                Title = @Title,
+                Author = @Author,
+                ISBN = @ISBN,
+                Publisher = @Publisher,
+                TotalCopies = @TotalCopies,
+                AvailableCopies = @AvailableCopies
+            WHERE BookID = @BookID";
+
+                using (var cmd = new SqlCommand(query , conn))
+                {
+                    cmd.Parameters.AddWithValue("@BookID" , book.BookID);
+                    cmd.Parameters.AddWithValue("@Title" , book.Title);
+                    cmd.Parameters.AddWithValue("@Author" , book.Author);
+                    cmd.Parameters.AddWithValue("@ISBN" , book.ISBN);
+                    cmd.Parameters.AddWithValue("@Publisher" , book.Publisher);
+                    cmd.Parameters.AddWithValue("@Year" , book.Year ?? (object)DBNull.Value);
+                    cmd.Parameters.AddWithValue("@CategoryID" , book.CategoryID);
+                    cmd.Parameters.AddWithValue("@TotalCopies" , book.TotalCopies);
+                    cmd.Parameters.AddWithValue("@AvailableCopies" , book.AvailableCopies);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        // Get Book by ID
+        public Book GetBookById(int bookId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                string query = "SELECT * FROM Books WHERE BookID = @BookID";
+
+                using (var cmd = new SqlCommand(query , conn))
+                {
+                    cmd.Parameters.AddWithValue("@BookID" , bookId);
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Book
+                            {
+                                BookID = (int)reader["BookID"] ,
+                                Title = reader["Title"].ToString() ,
+                                Author = reader["Author"].ToString() ,
+                                ISBN = reader["ISBN"] == DBNull.Value ? null : reader["ISBN"].ToString() ,
+                                Publisher = reader["Publisher"] == DBNull.Value ? null : reader["Publisher"].ToString() ,
+                                Year = reader["Year"] == DBNull.Value ? (int?)null : (int)reader["Year"] ,
+                                CategoryID = reader["CategoryID"] == DBNull.Value ? 0 : (int)reader["CategoryID"] ,
+                                TotalCopies = (int)reader["TotalCopies"] ,
+                                AvailableCopies = (int)reader["AvailableCopies"]
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+
     }
 }

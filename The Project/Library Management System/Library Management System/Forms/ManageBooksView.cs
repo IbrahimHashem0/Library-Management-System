@@ -117,7 +117,8 @@ namespace Library_Management_System.Forms
             booksGrid.Columns.Add("Title" , "Book Title");
             booksGrid.Columns.Add("Author" , "Author");
             booksGrid.Columns.Add("Category" , "Category");
-            booksGrid.Columns.Add("Quantity" , "Quantity");
+            booksGrid.Columns.Add("Total" , "Total Copies");
+            booksGrid.Columns.Add("Available" , "Available Copies");
             booksGrid.Columns.Add("Status" , "Status");
 
             // Actions
@@ -173,6 +174,28 @@ namespace Library_Management_System.Forms
                     );
                 }
             }
+            // Check if Edit button clicked
+            else if (booksGrid.Columns[e.ColumnIndex].Name == "Edit")
+            {
+                if (booksGrid.Rows[e.RowIndex].Cells["BookID"].Value == null)
+                    return;
+
+                int bookId = Convert.ToInt32(booksGrid.Rows[e.RowIndex].Cells["BookID"].Value);
+                EditBookView editView = new EditBookView(bookId);
+
+                Control container = this.Parent;
+
+                while (container != null && !(container is Panel))
+                {
+                    container = container.Parent;
+                }
+
+                if (container != null)
+                {
+                    container.Controls.Clear();
+                    container.Controls.Add(editView);
+                }
+            }
         }
 
         // ===== load data from database =====
@@ -189,7 +212,7 @@ namespace Library_Management_System.Forms
             }
             else
             {
-                books = repo.SearchBooks(searchTerm); // البحث حسب الكلمة
+                books = repo.SearchBooks(searchTerm); 
             }
 
             foreach (var book in books)
@@ -204,11 +227,13 @@ namespace Library_Management_System.Forms
                     book.Title ,
                     book.Author ,
                     book.CategoryID ,
+                    book.TotalCopies ,
                     book.AvailableCopies ,
                     status
                 );
             }
         }
+
 
     }
 }
