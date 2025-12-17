@@ -103,6 +103,8 @@ namespace Library_Management_System.Forms
                 billingBtn.Text = "Bill"; // Updated text to match image
                 billingBtn.Location = new Point(10, btnY); // Repositioned
                 billingBtn.Visible = true; // Ensure it is visible and positioned last
+                DashboardBtn_Click(this, EventArgs.Empty);
+
             }
         }
 
@@ -280,12 +282,15 @@ namespace Library_Management_System.Forms
 
             this.ResumeLayout(false);
 
-            QuoteView view = new QuoteView();
-            contentPanel.Controls.Clear();
-            contentPanel.Controls.Add(view);
-            view.Dock = DockStyle.Fill;
-            // Start on the Book Catalog view
-            catalogBtn.PerformClick();
+            if (_loggedInUser.Role != "admin")
+            {
+                QuoteView view = new QuoteView();
+                contentPanel.Controls.Clear();
+                contentPanel.Controls.Add(view);
+                view.Dock = DockStyle.Fill;
+            }
+                // Start on the Book Catalog view
+                catalogBtn.PerformClick();
         }
 
         private void MainDashBoard_Load(object sender, EventArgs e)
