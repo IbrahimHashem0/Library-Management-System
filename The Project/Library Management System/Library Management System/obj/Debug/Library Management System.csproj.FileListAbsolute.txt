@@ -58,3 +58,5 @@ D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management
 D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.exe
 D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.pdb
 C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.BookCard.resources
+D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library Management System.exe.config
+D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.BookCard.resources

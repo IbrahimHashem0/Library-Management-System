@@ -26,14 +26,13 @@ namespace Library_Management_System.Forms
         private void InitializeUI()
         {
             this.Dock = DockStyle.Fill;
-            this.BackColor = Color.White;
 
             Label title = new Label
             {
                 Text = "Admin Dashboard" ,
                 Font = new Font("Segoe UI" , 22 , FontStyle.Bold) ,
                 Location = new Point(20 , 20) ,
-                AutoSize = true
+                AutoSize = true 
             };
             this.Controls.Add(title);
 
@@ -70,7 +69,7 @@ namespace Library_Management_System.Forms
                 Text = title ,
                 Font = new Font("Segoe UI" , 11 , FontStyle.Bold) ,
                 Location = new Point(15 , 20) ,
-                AutoSize = true
+                AutoSize = true,
             };
 
             Label valueLabel = new Label
