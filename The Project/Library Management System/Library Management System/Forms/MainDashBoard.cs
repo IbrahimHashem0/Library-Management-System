@@ -26,7 +26,7 @@ namespace Library_Management_System.Forms
 
         // Menu Buttons
         // Renamed fields for clarity
-        private Button dashboardBtn, catalogBtn, myLoansBtn, myReservationsBtn, billingBtn;
+        private Button dashboardBtn, catalogBtn, myFavoritesBtn, myReservationsBtn, billingBtn;
         // ***** BUTTONS FOR ADMIN/LIBRARIAN ROLES *****
         private Button manageBooksBtn, manageUsersBtn; // Buttons for Admin/Librarian Management
         private Button borrowingBtn; // New field for Borrowing button
@@ -64,7 +64,7 @@ namespace Library_Management_System.Forms
                 // ----------------------------------------------------
                 // Hide: My Books (catalogBtn), Favorites (myLoansBtn), Notifications (myReservationsBtn)
                 catalogBtn.Visible = false;
-                myLoansBtn.Visible = false;
+                myFavoritesBtn.Visible = false;
                 myReservationsBtn.Visible = false;
 
                 // ----------------------------------------------------
@@ -220,31 +220,27 @@ namespace Library_Management_System.Forms
             btnY += btnSpacing;
             sidebarPanel.Controls.Add(headerTitleLabel);
 
-            // 1. Dashboard Button (Was 'Home')
             dashboardBtn = LocalCreateMenuButton("Home");
             dashboardBtn.Click += DashboardBtn_Click;
             sidebarPanel.Controls.Add(dashboardBtn);
             btnY += btnSpacing;
 
-            // 2. Book Catalog Button (Was 'My Books')
             catalogBtn = LocalCreateMenuButton("My Books");
             catalogBtn.Click += BorrowedBooksBtn_Click;
             sidebarPanel.Controls.Add(catalogBtn);
             btnY += btnSpacing;
 
-            // 3. My Loans Button (Was 'Favorites')
-            myLoansBtn = LocalCreateMenuButton("Favorites");
-            myLoansBtn.Click += FavoriteBtn_Click;
-            sidebarPanel.Controls.Add(myLoansBtn);
+            myFavoritesBtn = LocalCreateMenuButton("Favorites");
+            myFavoritesBtn.Click += FavoriteBtn_Click;
+            sidebarPanel.Controls.Add(myFavoritesBtn);
             btnY += btnSpacing;
 
-            // 4. My Reservations Button (Was 'Notifications')
             myReservationsBtn = LocalCreateMenuButton("Notifications");
             myReservationsBtn.Click += MyReservationsBtn_Click;
             sidebarPanel.Controls.Add(myReservationsBtn);
             btnY += btnSpacing;
 
-            // 5. Billing Button
+     
             billingBtn = LocalCreateMenuButton("Billing");
             billingBtn.Click += BillingBtn_Click;
             sidebarPanel.Controls.Add(billingBtn);
@@ -284,6 +280,10 @@ namespace Library_Management_System.Forms
 
             this.ResumeLayout(false);
 
+            QuoteView view = new QuoteView();
+            contentPanel.Controls.Clear();
+            contentPanel.Controls.Add(view);
+            view.Dock = DockStyle.Fill;
             // Start on the Book Catalog view
             catalogBtn.PerformClick();
         }
@@ -532,7 +532,7 @@ namespace Library_Management_System.Forms
             }
             else
             {
-                ReaderHomeView view = new ReaderHomeView();
+                ReaderHomeView view = new ReaderHomeView(_loggedInUser);
                 contentPanel.Controls.Clear();
                 contentPanel.Controls.Add(view);
                 view.Dock = DockStyle.Fill;
@@ -543,7 +543,7 @@ namespace Library_Management_System.Forms
         {
             headerTitleLabel.Text = "Borrowed Books";
 
-            MyBorrowedBooksView view = new MyBorrowedBooksView();
+            MyBorrowedBooksView view = new MyBorrowedBooksView(_loggedInUser);
             contentPanel.Controls.Clear();
             contentPanel.Controls.Add(view);
             view.Dock = DockStyle.Fill;

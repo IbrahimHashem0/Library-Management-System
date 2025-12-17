@@ -26,12 +26,14 @@ namespace Library_Management_System.Forms
         private const string PlaceholderText = "Search book by title or author...";
         private List<Button> categoryButtons = new List<Button>();
         private int currentCategoryId = 0;
+        private User _currentUser;
 
-        public ReaderHomeView()
+        public ReaderHomeView(User currentUser)
         {
             InitializeComponent();
             Initialize();
             LoadBooksFromDatabase("", currentCategoryId); // Load Real Data
+            _currentUser = currentUser;
         }
 
         private void Initialize()
@@ -51,14 +53,12 @@ namespace Library_Management_System.Forms
                 Font = new Font("Segoe UI", 12),
                 Location = new Point(15, 10),
                 Width = 500,
-                // Text = PlaceholderText,
 
                 ForeColor = Color.Black
             };
             searchBox.TextChanged += (s, e) =>
             {
-                // 1. If the text matches the placeholder, treat it as empty (Show All)
-                // 2. Otherwise, search for whatever the user typed
+                
                 string searchTerm = searchBox.Text == PlaceholderText ? "" : searchBox.Text;
 
                 LoadBooksFromDatabase(searchTerm, currentCategoryId);
@@ -227,17 +227,33 @@ namespace Library_Management_System.Forms
             // Create the card using the book's real data
             BookCard card = new BookCard(book.Title, book.Author, imgUrl);
 
-            // Handle Borrow Click
+            // LOGIC: Handle the Click Event
             card.OnBorrowClicked += (s, e) => {
-                // Here we have access to the specific 'book' object from the DB
-                if (book.AvailableCopies > 0)
+
+
+                var confirmResult = MessageBox.Show(
+                    $"Do you want to borrow '{book.Title}'?",
+                    "Confirm Borrow",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmResult == DialogResult.Yes)
                 {
-                    MessageBox.Show($"Requesting to borrow: {book.Title}\n(ID: {book.BookID})");
-                    // TODO: Call BorrowRepository logic here
-                }
-                else
-                {
-                    MessageBox.Show("Sorry, this book is currently out of stock.", "Unavailable", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    // 3. Call the Repository
+                    BorrowingRepository borrowRepo = new BorrowingRepository();
+                    string result = borrowRepo.BorrowBook(_currentUser.UserID, book.BookID);
+
+                    if (result == "Success")
+                    {
+                        MessageBox.Show("Book borrowed successfully! It is due in 14 days.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // 4. Refresh the Grid to show updated copy count (Copies: 5 -> 4)
+                        LoadBooksFromDatabase(searchBox.Text);
+                    }
+                    else
+                    {
+                        MessageBox.Show(result, "Borrow Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             };
 
@@ -245,6 +261,10 @@ namespace Library_Management_System.Forms
         }
         private void CategoryClicked(Button clickedBtn)
         {
+            if((int)clickedBtn.Tag == currentCategoryId)
+            {
+                return;
+            }
             // 1. Update the ID
             currentCategoryId = (int)clickedBtn.Tag;
 
