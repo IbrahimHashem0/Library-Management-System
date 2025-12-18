@@ -132,6 +132,7 @@ namespace Library_Management_System.Repositories
                 Author = @Author,
                 ISBN = @ISBN,
                 Publisher = @Publisher,
+                CategoryID = @CategoryID,
                 TotalCopies = @TotalCopies,
                 AvailableCopies = @AvailableCopies
             WHERE BookID = @BookID";

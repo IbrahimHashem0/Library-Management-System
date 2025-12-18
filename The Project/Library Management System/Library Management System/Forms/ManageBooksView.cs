@@ -117,7 +117,7 @@ namespace Library_Management_System.Forms
             booksGrid.Columns.Add("Title" , "Book Title");
             booksGrid.Columns.Add("Author" , "Author");
             booksGrid.Columns.Add("Category" , "Category");
-            booksGrid.Columns.Add("Total" , "Total Copies");
+            //booksGrid.Columns.Add("Total" , "Total Copies");
             booksGrid.Columns.Add("Available" , "Available Copies");
             booksGrid.Columns.Add("Status" , "Status");
 
@@ -227,7 +227,7 @@ namespace Library_Management_System.Forms
                     book.Title ,
                     book.Author ,
                     book.CategoryID ,
-                    book.TotalCopies ,
+                    //book.TotalCopies ,
                     book.AvailableCopies ,
                     status
                 );

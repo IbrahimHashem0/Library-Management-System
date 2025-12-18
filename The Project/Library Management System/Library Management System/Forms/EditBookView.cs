@@ -9,14 +9,15 @@ namespace Library_Management_System.Forms
     public partial class EditBookView : UserControl
     {
         private int _bookId;
-        private BookRepository _repo;
+        private readonly BookRepository _bookRepo;
+        private readonly CategoryRepository _categoryRepo;
         private Book _currentBook;
 
         private TextBox titleTxt;
         private TextBox authorTxt;
         private TextBox isbnTxt;
         private TextBox publisherTxt;
-        private TextBox categoryTxt;
+        private ComboBox categoryCombo;
         //private NumericUpDown totalCopiesNum;
         private Button saveBtn;
         private Button cancelBtn;
@@ -24,9 +25,11 @@ namespace Library_Management_System.Forms
         public EditBookView(int bookId)
         {
             _bookId = bookId;
-            _repo = new BookRepository();
+            _bookRepo = new BookRepository();
+            _categoryRepo = new CategoryRepository();
 
             InitializeUI();
+            LoadCategories();
             LoadBookData();
         }
 
@@ -34,7 +37,6 @@ namespace Library_Management_System.Forms
         private void InitializeUI()
         {
             this.Dock = DockStyle.Fill;
-            //this.BackColor = Color.White;
 
             Label header = new Label
             {
@@ -50,7 +52,6 @@ namespace Library_Management_System.Forms
             authorTxt = CreateTextBox("Author" , 170);
             isbnTxt = CreateTextBox("ISBN" , 240);
             publisherTxt = CreateTextBox("Publisher" , 310);
-            categoryTxt = CreateTextBox("Category" , 380);
 
             //Label copiesLabel = new Label
             //{
@@ -71,6 +72,26 @@ namespace Library_Management_System.Forms
             //};
             //this.Controls.Add(totalCopiesNum);
 
+            // ===== Category =====
+            Label categoryLabel = new Label
+            {
+                Text = "Category" ,
+                Location = new Point(20 , 360) ,
+                Font = new Font("Segoe UI" , 11 , FontStyle.Bold) ,
+                AutoSize = true
+            };
+            this.Controls.Add(categoryLabel);
+
+            categoryCombo = new ComboBox
+            {
+                Location = new Point(20 , 385) ,
+                Width = 300 ,
+                Font = new Font("Segoe UI" , 11) ,
+                DropDownStyle = ComboBoxStyle.DropDownList
+            };
+            this.Controls.Add(categoryCombo);
+
+            // ======== buttons ========
             saveBtn = new Button
             {
                 Text = "Save Changes" ,
@@ -120,10 +141,20 @@ namespace Library_Management_System.Forms
             return txt;
         }
 
-        // ================= Load Data =================
+        // ================= Load Categories =================
+        private void LoadCategories()
+        {
+            var categories = _categoryRepo.GetAllCategories();
+
+            categoryCombo.DataSource = categories;
+            categoryCombo.DisplayMember = "Name";
+            categoryCombo.ValueMember = "CategoryID";
+        }
+
+        // ================= Load Book =================
         private void LoadBookData()
         {
-            _currentBook = _repo.GetBookById(_bookId);
+            _currentBook = _bookRepo.GetBookById(_bookId);
 
             if (_currentBook == null)
             {
@@ -136,7 +167,8 @@ namespace Library_Management_System.Forms
             authorTxt.Text = _currentBook.Author;
             isbnTxt.Text = _currentBook.ISBN ?? "";
             publisherTxt.Text = _currentBook.Publisher ?? "";
-            //totalCopiesNum.Value = _currentBook.TotalCopies;
+
+            categoryCombo.SelectedValue = _currentBook.CategoryID;
         }
 
         // ================= Save =================
@@ -161,7 +193,7 @@ namespace Library_Management_System.Forms
                 Author = authorTxt.Text.Trim() ,
                 ISBN = string.IsNullOrWhiteSpace(isbnTxt.Text) ? null : isbnTxt.Text.Trim() ,
                 Publisher = string.IsNullOrWhiteSpace(publisherTxt.Text) ? null : publisherTxt.Text.Trim() ,
-                CategoryID = _currentBook.CategoryID ,
+                CategoryID = (int)categoryCombo.SelectedValue ,
                 //TotalCopies = (int)totalCopiesNum.Value ,
 
                 // IMPORTANT: don't break borrowing logic
@@ -171,7 +203,7 @@ namespace Library_Management_System.Forms
                 //)
             };
 
-            _repo.UpdateBook(updatedBook);
+            _bookRepo.UpdateBook(updatedBook);
 
             MessageBox.Show(
                 "Book updated successfully." ,
