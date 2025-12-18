@@ -13,7 +13,7 @@ namespace Library_Management_System.Forms
     public partial class BookCard : UserControl
     {
         public event EventHandler OnBorrowClicked;
-
+        public event EventHandler OnFavouriteClicked;
         public BookCard(string title, string author, string imagePath = "")
         {
             InitializeComponent(title, author, imagePath);
@@ -72,14 +72,15 @@ namespace Library_Management_System.Forms
             Button btnBorrow = new Button
             {
                 Text = "Borrow",
-                Size = new Size(120, 35),
-                Location = new Point(40, 270),
+                Size = new Size(100, 35),
+                Location = new Point(20, 270),
                 BackColor = Color.FromArgb(79, 70, 229), // Your Theme Purple
                 ForeColor = Color.White,
                 FlatStyle = FlatStyle.Flat,
                 Font = new Font("Segoe UI", 10, FontStyle.Bold),
                 Cursor = Cursors.Hand
             };
+
             btnBorrow.FlatAppearance.BorderSize = 0;
 
             // Link the button click to our custom event
@@ -89,6 +90,36 @@ namespace Library_Management_System.Forms
             };
 
             this.Controls.Add(btnBorrow);
+            Button btnFav = new Button
+            {
+                Text = "♥",
+                Font = new Font("Segoe UI", 14, FontStyle.Regular),
+                Size = new Size(40, 40),
+                Location = new Point(130, 270), 
+               
+                BackColor = Color.White,
+                ForeColor = Color.Gray, 
+                FlatStyle = FlatStyle.Flat,
+                Cursor = Cursors.Hand,
+                TextAlign=ContentAlignment.MiddleCenter
+            };
+
+            btnFav.FlatAppearance.BorderSize = 1;
+            btnFav.FlatAppearance.BorderColor = Color.FromArgb(230, 230, 230);
+
+            btnFav.Click += (s, e) =>
+            {
+                // Toggle Color (Gray <-> Red)
+                if (btnFav.ForeColor == Color.Gray)
+                    btnFav.ForeColor = Color.Red;
+                else
+                    btnFav.ForeColor = Color.Gray;
+
+                // Trigger the empty event
+                OnFavouriteClicked?.Invoke(this, EventArgs.Empty);
+            };
+
+            this.Controls.Add(btnFav);
 
             // Optional: Draw a subtle gray border around the card
             this.Paint += (s, e) => {
