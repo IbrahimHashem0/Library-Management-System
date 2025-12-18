@@ -190,5 +190,88 @@ namespace Library_Management_System.Repositories
             return null;
         }
 
+        // get Book by Title and Author
+        public Book GetBookByTitleAndAuthor(string title , string author)
+        {
+            using (var connection = DatabaseHelper.GetConnection())
+            {
+                string query = @"SELECT * FROM Books 
+                         WHERE LOWER(LTRIM(RTRIM(Title))) = @Title 
+                           AND LOWER(LTRIM(RTRIM(Author))) = @Author";
+                SqlCommand cmd = new SqlCommand(query , connection);
+                cmd.Parameters.AddWithValue("@Title" , title.Trim().ToLower());
+                cmd.Parameters.AddWithValue("@Author" , author.Trim().ToLower());
+
+                connection.Open();
+                SqlDataReader reader = cmd.ExecuteReader();
+                if (reader.Read())
+                {
+                    return new Book
+                    {
+                        BookID = (int)reader["BookID"] ,
+                        Title = reader["Title"].ToString() ,
+                        Author = reader["Author"].ToString() ,
+                        ISBN = reader["ISBN"] != DBNull.Value ? reader["ISBN"].ToString() : null ,
+                        Publisher = reader["Publisher"] != DBNull.Value ? reader["Publisher"].ToString() : null ,
+                        Year = reader["Year"] != DBNull.Value ? (int)reader["Year"] : 0 ,
+                        CategoryID = (int)reader["CategoryID"] ,
+                        TotalCopies = (int)reader["TotalCopies"] ,
+                        AvailableCopies = (int)reader["AvailableCopies"]
+                    };
+                }
+            }
+            return null;
+        }
+
+        // get Book by ISBN
+        public Book GetBookByISBN(string isbn)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = "SELECT * FROM Books WHERE ISBN=@ISBN";
+                using (var cmd = new SqlCommand(query , conn))
+                {
+                    cmd.Parameters.AddWithValue("@ISBN" , isbn);
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            return new Book
+                            {
+                                BookID = (int)reader["BookID"] ,
+                                Title = reader["Title"].ToString() ,
+                                Author = reader["Author"].ToString() ,
+                                ISBN = reader["ISBN"] != DBNull.Value ? reader["ISBN"].ToString() : null ,
+                                Publisher = reader["Publisher"] != DBNull.Value ? reader["Publisher"].ToString() : null ,
+                                Year = reader["Year"] != DBNull.Value ? (int)reader["Year"] : 0 ,
+                                CategoryID = (int)reader["CategoryID"] ,
+                                TotalCopies = (int)reader["TotalCopies"] ,
+                                AvailableCopies = (int)reader["AvailableCopies"]
+                            };
+                        }
+                    }
+                }
+            }
+            return null;
+        }
+        // is book borrowed
+        public bool IsBookBorrowed(int bookId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = "SELECT COUNT(*) FROM Borrowings WHERE BookID=@BookID AND Status='borrowed'";
+                using (var cmd = new SqlCommand(query , conn))
+                {
+                    cmd.Parameters.AddWithValue("@BookID" , bookId);
+                    int count = (int)cmd.ExecuteScalar();
+                    return count > 0; // true if book is borrowed
+                }
+            }
+        }
+
+
+
     }
 }

@@ -91,6 +91,7 @@ namespace Library_Management_System.Forms
             };
             this.Controls.Add(categoryCombo);
 
+
             // ======== buttons ========
             saveBtn = new Button
             {
@@ -147,6 +148,8 @@ namespace Library_Management_System.Forms
             var categories = _categoryRepo.GetAllCategories();
 
             categoryCombo.DataSource = categories;
+            categories.RemoveAll(c => c.CategoryID == 0);
+
             categoryCombo.DisplayMember = "Name";
             categoryCombo.ValueMember = "CategoryID";
         }

@@ -51,6 +51,8 @@ namespace Library_Management_System.Forms
                 Cursor = Cursors.Hand
             };
             this.Controls.Add(addBookBtn);
+            addBookBtn.Click += AddBookBtn_Click;
+
 
             // ===== SEARCH =====
             searchTextBox = new TextBox
@@ -117,7 +119,7 @@ namespace Library_Management_System.Forms
             booksGrid.Columns.Add("Title" , "Book Title");
             booksGrid.Columns.Add("Author" , "Author");
             booksGrid.Columns.Add("Category" , "Category");
-            //booksGrid.Columns.Add("Total" , "Total Copies");
+            booksGrid.Columns.Add("Total" , "Total Copies");
             booksGrid.Columns.Add("Available" , "Available Copies");
             booksGrid.Columns.Add("Status" , "Status");
 
@@ -150,6 +152,19 @@ namespace Library_Management_System.Forms
             if (booksGrid.Columns[e.ColumnIndex].Name == "Delete")
             {
                 int bookId = Convert.ToInt32(booksGrid.Rows[e.RowIndex].Cells["BookID"].Value);
+                var repo = new BookRepository();
+
+                // ===== Check if book is borrowed =====
+                if (repo.IsBookBorrowed(bookId))
+                {
+                    MessageBox.Show(
+                        "This book cannot be deleted because it is currently borrowed." ,
+                        "Cannot Delete" ,
+                        MessageBoxButtons.OK ,
+                        MessageBoxIcon.Warning
+                    );
+                    return;
+                }
 
                 var confirm = MessageBox.Show(
                     "Are you sure you want to delete this book?" ,
@@ -160,7 +175,6 @@ namespace Library_Management_System.Forms
 
                 if (confirm == DialogResult.Yes)
                 {
-                    var repo = new BookRepository();
                     repo.DeleteBook(bookId);
 
                     // Remove from grid
@@ -174,6 +188,7 @@ namespace Library_Management_System.Forms
                     );
                 }
             }
+
             // Check if Edit button clicked
             else if (booksGrid.Columns[e.ColumnIndex].Name == "Edit")
             {
@@ -196,7 +211,27 @@ namespace Library_Management_System.Forms
                     container.Controls.Add(editView);
                 }
             }
+
+           
         }
+
+        // ==== event handlers for add book button  ====
+        private void AddBookBtn_Click(object sender , EventArgs e)
+        {
+            Control container = this.Parent;
+
+            while (container != null && !(container is Panel))
+            {
+                container = container.Parent;
+            }
+
+            if (container != null)
+            {
+                container.Controls.Clear();
+                container.Controls.Add(new AddBookView());
+            }
+        }
+
 
         // ===== load data from database =====
         private void LoadBooks(string searchTerm = "")
@@ -227,7 +262,7 @@ namespace Library_Management_System.Forms
                     book.Title ,
                     book.Author ,
                     book.CategoryID ,
-                    //book.TotalCopies ,
+                    book.TotalCopies ,
                     book.AvailableCopies ,
                     status
                 );
