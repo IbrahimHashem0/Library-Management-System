@@ -12,7 +12,7 @@ namespace Library_Management_System.Models
         public string FullName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
-
+        public string Status { get; set; } = "Active";
         public string Role { get; set; } // 'admin', 'librarian', 'student'
         public DateTime CreatedAt { get; set; }
     }

@@ -65,3 +65,5 @@ D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management
 D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.BookCard.resources
 >>>>>>> e47006dccd2ed9a6649f0617887399d4ad9f0769
 D:\FCI\_3_First-Term\Software Engneer\finalProject\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.QuoteView.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.BookCard.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.QuoteView.resources

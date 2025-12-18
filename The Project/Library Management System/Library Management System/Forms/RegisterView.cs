@@ -114,45 +114,54 @@ namespace Library_Management_System.Forms
         }
         private void Register_Click()
         {
-            string fullName = fullNameTextBox.Text;
-            string email = regEmailTextBox.Text;
+            string fullName = fullNameTextBox.Text.Trim();
+            string email = regEmailTextBox.Text.Trim().ToLower();
             string password = regPasswordTextBox.Text;
-            string role = "Student";
-
-            // Basic input validation
-            if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password) || string.IsNullOrWhiteSpace(role))
+            string role = "Reader"; 
+            if (string.IsNullOrWhiteSpace(fullName) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
             {
                 MessageBox.Show("Please fill out all fields.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            UserRepository repo = new UserRepository();
+
+            if (repo.IsEmailExists(email))
+            {
+                MessageBox.Show("This email is already registered. Please try logging in.", "Duplicate Email", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             try
             {
-                // Call the Repository method to insert the user into the database
-                UserRepository repo = new UserRepository();
+                string hashedPassword = LibrarySystem.Services.SecurityService.HashPassword(password);
 
-                // --- FIX IS HERE ---
-                // Change: bool success = repo.RegisterUser(name, email, plainPassword, role);
-                // To:
-                bool success = repo.Register(fullName, email, password, role);
+                var newUser = new Library_Management_System.Models.User
+                {
+                    FullName = fullName,
+                    Email = email,
+                    Password = hashedPassword,
+                    Role = role,
+                    Status = "Active"
+                };
+
+                bool success = repo.AddUser(newUser);
 
                 if (success)
                 {
-                    MessageBox.Show("Registration Successful! You can now log in.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    loginForm.showLogIn();  // Switch back to the login screen
+                    MessageBox.Show("Registration Successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    loginForm.showLogIn();
                 }
                 else
                 {
-                    // This is where database-level failures (like duplicate email) are reported
-                    MessageBox.Show("Registration failed. This email might already be in use or there was a database error. Check server logs.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Registration failed due to a database error.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception ex)
             {
-                // Catch any unexpected exceptions (e.g., repository not found, connection issues)
-                MessageBox.Show($"An unexpected error occurred during registration: {ex.Message}", "System Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Error: {ex.Message}", "System Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        
+
     }
 }
