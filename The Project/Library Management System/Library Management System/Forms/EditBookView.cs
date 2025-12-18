@@ -16,7 +16,8 @@ namespace Library_Management_System.Forms
         private TextBox authorTxt;
         private TextBox isbnTxt;
         private TextBox publisherTxt;
-        private NumericUpDown totalCopiesNum;
+        private TextBox categoryTxt;
+        //private NumericUpDown totalCopiesNum;
         private Button saveBtn;
         private Button cancelBtn;
 
@@ -33,46 +34,47 @@ namespace Library_Management_System.Forms
         private void InitializeUI()
         {
             this.Dock = DockStyle.Fill;
-            this.BackColor = Color.White;
+            //this.BackColor = Color.White;
 
             Label header = new Label
             {
                 Text = "Edit Book" ,
-                Font = new Font("Segoe UI" , 20 , FontStyle.Bold) ,
+                Font = new Font("Segoe UI" , 22 , FontStyle.Bold) ,
                 Location = new Point(20 , 20) ,
                 ForeColor = Color.FromArgb(63 , 81 , 181) ,
                 AutoSize = true
             };
             this.Controls.Add(header);
 
-            titleTxt = CreateTextBox("Title" , 80);
-            authorTxt = CreateTextBox("Author" , 130);
-            isbnTxt = CreateTextBox("ISBN" , 180);
-            publisherTxt = CreateTextBox("Publisher" , 230);
+            titleTxt = CreateTextBox("Title" , 100);
+            authorTxt = CreateTextBox("Author" , 170);
+            isbnTxt = CreateTextBox("ISBN" , 240);
+            publisherTxt = CreateTextBox("Publisher" , 310);
+            categoryTxt = CreateTextBox("Category" , 380);
 
-            Label copiesLabel = new Label
-            {
-                Text = "Total Copies" ,
-                Location = new Point(20 , 280) ,
-                Font = new Font("Segoe UI" , 10 , FontStyle.Bold) ,
-                AutoSize = true
-            };
-            this.Controls.Add(copiesLabel);
+            //Label copiesLabel = new Label
+            //{
+            //    Text = "Total Copies" ,
+            //    Location = new Point(20 , 280) ,
+            //    Font = new Font("Segoe UI" , 10 , FontStyle.Bold) ,
+            //    AutoSize = true
+            //};
+            //this.Controls.Add(copiesLabel);
 
-            totalCopiesNum = new NumericUpDown
-            {
-                Location = new Point(20 , 305) ,
-                Width = 300 ,
-                Minimum = 0 ,
-                Maximum = 10000 ,
-                Font = new Font("Segoe UI" , 11)
-            };
-            this.Controls.Add(totalCopiesNum);
+            //totalCopiesNum = new NumericUpDown
+            //{
+            //    Location = new Point(20 , 305) ,
+            //    Width = 300 ,
+            //    Minimum = 0 ,
+            //    Maximum = 10000 ,
+            //    Font = new Font("Segoe UI" , 11)
+            //};
+            //this.Controls.Add(totalCopiesNum);
 
             saveBtn = new Button
             {
                 Text = "Save Changes" ,
-                Location = new Point(20 , 360) ,
+                Location = new Point(20 , 420) ,
                 Size = new Size(140 , 40) ,
                 BackColor = Color.FromArgb(79 , 70 , 229) ,
                 ForeColor = Color.White ,
@@ -84,7 +86,7 @@ namespace Library_Management_System.Forms
             cancelBtn = new Button
             {
                 Text = "Cancel" ,
-                Location = new Point(180 , 360) ,
+                Location = new Point(180 , 420) ,
                 Size = new Size(140 , 40) ,
                 FlatStyle = FlatStyle.Flat ,
                 Cursor = Cursors.Hand
@@ -102,7 +104,7 @@ namespace Library_Management_System.Forms
             {
                 Text = labelText ,
                 Location = new Point(20 , y - 20) ,
-                Font = new Font("Segoe UI" , 10 , FontStyle.Bold) ,
+                Font = new Font("Segoe UI" , 11 , FontStyle.Bold) ,
                 AutoSize = true
             };
             this.Controls.Add(label);
@@ -134,7 +136,7 @@ namespace Library_Management_System.Forms
             authorTxt.Text = _currentBook.Author;
             isbnTxt.Text = _currentBook.ISBN ?? "";
             publisherTxt.Text = _currentBook.Publisher ?? "";
-            totalCopiesNum.Value = _currentBook.TotalCopies;
+            //totalCopiesNum.Value = _currentBook.TotalCopies;
         }
 
         // ================= Save =================
@@ -160,13 +162,13 @@ namespace Library_Management_System.Forms
                 ISBN = string.IsNullOrWhiteSpace(isbnTxt.Text) ? null : isbnTxt.Text.Trim() ,
                 Publisher = string.IsNullOrWhiteSpace(publisherTxt.Text) ? null : publisherTxt.Text.Trim() ,
                 CategoryID = _currentBook.CategoryID ,
-                TotalCopies = (int)totalCopiesNum.Value ,
+                //TotalCopies = (int)totalCopiesNum.Value ,
 
                 // IMPORTANT: don't break borrowing logic
-                AvailableCopies = Math.Min(
-                    _currentBook.AvailableCopies ,
-                    (int)totalCopiesNum.Value
-                )
+                //AvailableCopies = Math.Min(
+                //    _currentBook.AvailableCopies ,
+                //    (int)totalCopiesNum.Value
+                //)
             };
 
             _repo.UpdateBook(updatedBook);

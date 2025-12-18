@@ -26,13 +26,12 @@ namespace Library_Management_System.Forms
         private void InitializeUI()
         {
             this.Dock = DockStyle.Fill;
-            this.BackColor = Color.White;
 
             // ===== HEADER =====
             Label title = new Label
             {
                 Text = "Manage Books" ,
-                Font = new Font("Segoe UI" , 20 , FontStyle.Bold) ,
+                Font = new Font("Segoe UI" , 22 , FontStyle.Bold) ,
                 Location = new Point(20 , 20) ,
                 ForeColor = Color.FromArgb(63 , 81 , 181) ,
                 AutoSize = true
