@@ -1,6 +1,24 @@
 ﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+# Visual Studio / .NET
 ################################################################################
 
-/.vs
-/The Project/Library Management System/.vs/Library Management System
+# Visual Studio folder
+.vs/
+*/.vs/
+
+# Build outputs
+bin/
+obj/
+*/bin/
+*/obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Cache / temp files
+*.cache
+*.sqlite
+
+# Logs
+*.log
