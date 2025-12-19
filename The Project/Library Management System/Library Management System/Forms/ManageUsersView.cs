@@ -248,9 +248,9 @@ namespace Library_Management_System.Forms
             string userRole = usersGrid.Rows[rowIndex].Cells["Role"].Value.ToString();
             var repo = new UserRepository();
 
-            if (userEmail == "admin@library.com" || userId == 1)
+            if (userEmail == "admin@library.com")
             {
-                MessageBox.Show("The Master Admin account cannot be deleted.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Hand);
+                MessageBox.Show("The Main Admin account cannot be deleted.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return;
             }
 

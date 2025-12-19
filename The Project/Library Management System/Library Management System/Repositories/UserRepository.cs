@@ -42,6 +42,7 @@ namespace Library_Management_System.Repositories
         {
             try
             {
+
                 using (var conn = GetConnection())
                 {
                     conn.Open();
@@ -68,7 +69,7 @@ namespace Library_Management_System.Repositories
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
-                string query = "SELECT COUNT(*) FROM Users WHERE Role = 'Admin'";
+                string query = "SELECT COUNT(*) FROM Users WHERE Role = 'admin'";
                 SqlCommand cmd = new SqlCommand(query, conn);
                 conn.Open();
                 return (int)cmd.ExecuteScalar();
@@ -163,37 +164,7 @@ namespace Library_Management_System.Repositories
             return null; // Login Failed (Wrong password or email not found)
         }
 
-        public bool Register(string fullName, string email, string plainPassword, string role)
-        {
-            string hashedPassword = SecurityService.HashPassword(plainPassword);
-            string query = "INSERT INTO Users (FullName, Email, Password, Role) VALUES (@Name, @Email, @Pass, @Role)";
-
-            using (var conn = DatabaseHelper.GetConnection())
-            using (var cmd = new SqlCommand(query, conn))
-            {
-                cmd.Parameters.AddWithValue("@Name", fullName);
-                cmd.Parameters.AddWithValue("@Email", email);
-                cmd.Parameters.AddWithValue("@Pass", hashedPassword);
-                cmd.Parameters.AddWithValue("@Role", role);
-
-                try
-                {
-                    conn.Open();
-                    int rowsAffected = cmd.ExecuteNonQuery();
-                    return rowsAffected == 1;
-                }
-                catch (SqlException ex) when (ex.Number == 2627)
-                {
-                    // Error 2627: Unique constraint violation (Email already exists)
-                    return false;
-                }
-                catch (Exception)
-                {
-                    return false;
-                }
-            }
-        }
-
+        
         public bool ToggleUserStatus(int userId, string currentStatus)
         {
             // Determine the new status
