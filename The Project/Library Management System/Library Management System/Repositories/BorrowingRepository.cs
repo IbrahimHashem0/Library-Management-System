@@ -12,6 +12,48 @@ namespace Library_Management_System.Repositories
 {
     internal class BorrowingRepository
     {
+        public List<BorrowHistoryItem> GetAllBorrowingsForAdmin(string searchTerm = "")
+        {
+            var list = new List<BorrowHistoryItem>();
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = @"
+            SELECT br.BorrowingID, u.FullName AS UserName, b.Title, b.Author, 
+                   br.BorrowDate, br.ReturnDate, br.Status
+            FROM Borrowings br
+            JOIN Users u ON br.UserID = u.UserID
+            JOIN Books b ON br.BookID = b.BookID
+            WHERE u.FullName LIKE @search 
+               OR b.Title LIKE @search 
+               OR b.Author LIKE @search
+            ORDER BY br.BorrowDate DESC";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@search", "%" + searchTerm + "%");
+
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new BorrowHistoryItem
+                            {
+                                BorrowingID = (int)reader["BorrowingID"],
+                                UserName = reader["UserName"].ToString(),
+                                Title = reader["Title"].ToString(),
+                                Author = reader["Author"].ToString(),
+                                BorrowDate = Convert.ToDateTime(reader["BorrowDate"]).ToString("dd-MM-yyyy"),
+                                ReturnDate = reader["ReturnDate"] != DBNull.Value ? Convert.ToDateTime(reader["ReturnDate"]).ToString("dd-MM-yyyy") : "---",
+                                Status = reader["Status"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return list;
+        }
+
         public string BorrowBook(int userId, int bookId)
         {
             using (var conn = DatabaseHelper.GetConnection())

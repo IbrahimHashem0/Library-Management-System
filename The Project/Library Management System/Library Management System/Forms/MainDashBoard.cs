@@ -360,8 +360,16 @@ namespace Library_Management_System.Forms
 
         private void BorrowingBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "Borrowing && Returns";
+            headerTitleLabel.Text = "Borrowing Management";
+
             contentPanel.Controls.Clear();
+
+            ManageBorrowingView view = new ManageBorrowingView();
+
+            view.Dock = DockStyle.Fill;
+
+            contentPanel.Controls.Add(view);
+            view.BringToFront();
         }
         #endregion
     }
