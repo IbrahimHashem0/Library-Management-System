@@ -82,9 +82,9 @@ namespace Library_Management_System.Forms
                 billingBtn.Text = "Bill";
                 billingBtn.Location = new Point(10, btnY);
                 billingBtn.Visible = true;
+                DashboardBtn_Click(this, EventArgs.Empty);
             }
-
-            DashboardBtn_Click(this, EventArgs.Empty);
+            
         }
 
         private Button CreateMenuButton(string text)
@@ -229,10 +229,17 @@ namespace Library_Management_System.Forms
             {
                 logoutBtn.Location = new Point(10, this.ClientSize.Height - 80);
             };
-
+            
             this.ResumeLayout(false);
+            if (_loggedInUser.Role.ToLower() == "student"|| _loggedInUser.Role.ToLower() == "reader")
+            {
+                QuoteView view = new QuoteView();
+                contentPanel.Controls.Clear();
+                contentPanel.Controls.Add(view);
+                view.Dock = DockStyle.Fill;
+            }
 
-            contentPanel.Controls.Clear();
+
         }
 
         private void MainDashBoard_Load(object sender, EventArgs e)

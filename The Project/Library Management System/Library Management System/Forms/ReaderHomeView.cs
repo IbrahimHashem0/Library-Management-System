@@ -233,8 +233,11 @@ namespace Library_Management_System.Forms
         {
             // Create the card using the book's real data
            // BookCard card = new BookCard(book.Title, book.Author, imgUrl);
-            BookCard card = new BookCard(book.Title, book.Author, book.ISBN, book.BookID, _currentUser.UserID);
-
+            BookCard card = new BookCard(book.Title, book.Author, imgUrl, book.BookID, _currentUser.UserID);
+            if (card.isFav())
+                card.btnFav.ForeColor = Color.Red;
+            else
+                card.btnFav.ForeColor = Color.Gray;
             // LOGIC: Handle the Click Event
             card.OnBorrowClicked += (s, e) => {
 

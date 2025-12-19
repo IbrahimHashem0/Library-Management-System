@@ -21,7 +21,7 @@ namespace Library_Management_System.Forms
 
         private void BuildControlManually()
         {
-            this.BackColor = Color.White;
+            this.BackColor = Color.WhiteSmoke;
             this.Padding = new Padding(20);
 
             Label lblTitle = new Label();
@@ -155,7 +155,7 @@ namespace Library_Management_System.Forms
         private void CreateBookCard(string title, string author, Image bookImage, int bookID, int currentUserID)
         {
             Panel card = new Panel();
-            card.Size = new Size(220, 360);
+            card.Size = new Size(200, 360);
             card.Margin = new Padding(15);
             card.BackColor = Color.White;
 
@@ -170,8 +170,8 @@ namespace Library_Management_System.Forms
             };
 
             PictureBox pb = new PictureBox();
-            pb.Size = new Size(180, 250);
-            pb.Location = new Point(20, 15);
+            pb.Size = new Size(120, 160);
+            pb.Location = new Point(40, 15);
             pb.SizeMode = PictureBoxSizeMode.Zoom;
             pb.BorderStyle = BorderStyle.None;
 
@@ -197,26 +197,29 @@ namespace Library_Management_System.Forms
             lblTitle.Text = title;
             lblTitle.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             lblTitle.ForeColor = Color.FromArgb(30, 30, 30);
-            lblTitle.MaximumSize = new Size(180, 0);
+            lblTitle.Size = new Size(180, 45);
             lblTitle.TextAlign = ContentAlignment.MiddleCenter;
-            lblTitle.Location = new Point(20, 275);
+            lblTitle.Location = new Point(10, 190);
 
             Label lblAuthor = new Label();
             lblAuthor.Text = "Author: " + author;
             lblAuthor.Font = new Font("Segoe UI", 9F);
             lblAuthor.ForeColor = Color.Gray;
             lblAuthor.TextAlign = ContentAlignment.MiddleCenter;
-            lblAuthor.Location = new Point(20, 305);
+            lblAuthor.Location = new Point(10, 235);
+            lblAuthor.Size = new Size(180, 20);
 
-            Button btnBorrow = new Button();
-            btnBorrow.Text = "Borrow";
-            btnBorrow.Size = new Size(90, 35);
-            btnBorrow.Location = new Point(20, 320);
-            btnBorrow.BackColor = Color.FromArgb(0, 123, 255);
-            btnBorrow.ForeColor = Color.White;
-            btnBorrow.FlatStyle = FlatStyle.Flat;
-            btnBorrow.FlatAppearance.BorderSize = 0;
-            btnBorrow.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            Button btnBorrow = new Button
+            {
+                Text = "Borrow",
+                Size = new Size(160, 35),
+                Location = new Point(20, 270),
+                BackColor = Color.FromArgb(0, 123, 255), // Your Theme Purple
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
             btnBorrow.Click += (s, e) => {
                 var confirmResult = MessageBox.Show($"Are you sure you want to borrow '{title}'?", "Confirm Borrow", MessageBoxButtons.YesNo);
 
@@ -236,15 +239,17 @@ namespace Library_Management_System.Forms
                     }
                 }
             };
-            Button btnRemove = new Button();
-            btnRemove.Text = "Remove";
-            btnRemove.Size = new Size(90, 35);
-            btnRemove.Location = new Point(110, 320);
-            btnRemove.BackColor = Color.FromArgb(220, 53, 69);
-            btnRemove.ForeColor = Color.White;
-            btnRemove.FlatStyle = FlatStyle.Flat;
-            btnRemove.FlatAppearance.BorderSize = 0;
-            btnRemove.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            Button btnRemove = new Button
+            {
+                Text = "Remove",
+                Size = new Size(160, 35),
+                Location = new Point(20, 310),
+                BackColor = Color.FromArgb(220, 53, 69), // Your Theme Purple
+                ForeColor = Color.White,
+                FlatStyle = FlatStyle.Flat,
+                Font = new Font("Segoe UI", 10, FontStyle.Bold),
+                Cursor = Cursors.Hand
+            };
             btnRemove.Click += (s, e) =>
             {
                 if (MessageBox.Show("Remove this book from favorites?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -280,7 +285,9 @@ namespace Library_Management_System.Forms
             card.Controls.Add(lblAuthor);
             card.Controls.Add(btnBorrow);
             card.Controls.Add(btnRemove);
-
+            card.Paint += (s, e) => {
+                ControlPaint.DrawBorder(e.Graphics, this.ClientRectangle, Color.FromArgb(230, 230, 230), ButtonBorderStyle.Solid);
+            };
             flowFavorites.Controls.Add(card);
         }
 

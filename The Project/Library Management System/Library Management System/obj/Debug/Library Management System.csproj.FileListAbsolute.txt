@@ -89,3 +89,8 @@ C:\Users\TheGenius\source\repos\Software project\Library-Management-System\The P
 C:\Users\TheGenius\source\repos\Software project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.EditBookView.resources
 C:\Users\TheGenius\source\repos\Software project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.ReaderHomeView.resources
 C:\Users\TheGenius\source\repos\Software project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.NotificationsUserControl.resources
+C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.AddBookView.resources
+C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.EditBookView.resources
+C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.FavoritesUserControl.resources
+C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.ReaderHomeView.resources
+C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.NotificationsUserControl.resources
