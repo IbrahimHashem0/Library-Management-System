@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Text.RegularExpressions;
 
 namespace Library_Management_System.Forms
 {
@@ -112,6 +113,15 @@ namespace Library_Management_System.Forms
             this.Controls.Add(regPnl);
             regPnl.BringToFront();
         }
+
+
+        public bool IsValidEmail(string email)
+        {
+            
+            string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";
+
+            return Regex.IsMatch(email, pattern);
+        }
         private void Register_Click()
         {
             string fullName = fullNameTextBox.Text.Trim();
@@ -144,7 +154,12 @@ namespace Library_Management_System.Forms
                     Role = role,
                     Status = "Active"
                 };
-
+                if (!IsValidEmail(email))
+                {
+                    MessageBox.Show("This email is Invalid. Please enter a valid email in.", "Invalid Email", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    regEmailTextBox.Focus();
+                    return;
+                }
                 bool success = repo.AddUser(newUser);
 
                 if (success)

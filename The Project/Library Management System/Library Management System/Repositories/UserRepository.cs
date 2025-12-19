@@ -38,6 +38,8 @@ namespace Library_Management_System.Repositories
             string connectionString = @"Server=.;Database=Library Management System;Trusted_Connection=True;";
             return new SqlConnection(connectionString);
         }
+
+
         public bool AddUser(User user)
         {
             try

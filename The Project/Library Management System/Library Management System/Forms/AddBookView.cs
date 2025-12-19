@@ -218,6 +218,11 @@ namespace Library_Management_System.Forms
             int categoryId = (int)categoryCombo.SelectedValue;
             int totalCopies = (int)totalCopiesNum.Value;
 
+            if(isbn.Length!=13 && isbn.Length != 10)
+            {
+                MessageBox.Show("ISBN should consist of 10 or 13 charachter", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             // ===== Check for duplicates =====
             var existingBookByTitleAuthor = _bookRepo.GetBookByTitleAndAuthor(title , author);
             if (existingBookByTitleAuthor != null)
