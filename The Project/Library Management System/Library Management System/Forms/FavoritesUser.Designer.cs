@@ -1,6 +1,6 @@
 ﻿namespace Library_Management_System.Forms
 {
-    partial class EditBookView
+    partial class FavoritesUserControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -11,7 +11,7 @@
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
+        protected  void Dispose(bool disposing)
         {
             if (disposing && (components != null))
             {
@@ -30,12 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // EditBookView
+            // FavoritesUserControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Name = "EditBookView";
-            this.Load += new System.EventHandler(this.EditBookView_Load);
+            this.Name = "FavoritesUserControl";
+            this.Load += new System.EventHandler(this.FavoritesUserControl_Load);
             this.ResumeLayout(false);
 
         }

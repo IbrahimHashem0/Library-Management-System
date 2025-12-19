@@ -278,5 +278,9 @@ namespace Library_Management_System.Forms
             }
         }
 
+        private void AddBookView_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

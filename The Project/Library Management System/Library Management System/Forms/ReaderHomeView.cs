@@ -28,12 +28,19 @@ namespace Library_Management_System.Forms
         private int currentCategoryId = 0;
         private User _currentUser;
 
+        //public ReaderHomeView(User currentUser)
+        //{
+        //    InitializeComponent();
+        //    Initialize();
+        //    LoadBooksFromDatabase("", currentCategoryId); // Load Real Data
+        //    _currentUser = currentUser;
+        //}
         public ReaderHomeView(User currentUser)
         {
             InitializeComponent();
+            _currentUser = currentUser;      
             Initialize();
-            LoadBooksFromDatabase("", currentCategoryId); // Load Real Data
-            _currentUser = currentUser;
+            LoadBooksFromDatabase("", currentCategoryId); 
         }
 
         private void Initialize()
@@ -225,7 +232,8 @@ namespace Library_Management_System.Forms
         private void AddCard(Book book, string imgUrl)
         {
             // Create the card using the book's real data
-            BookCard card = new BookCard(book.Title, book.Author, imgUrl);
+           // BookCard card = new BookCard(book.Title, book.Author, imgUrl);
+            BookCard card = new BookCard(book.Title, book.Author, book.ISBN, book.BookID, _currentUser.UserID);
 
             // LOGIC: Handle the Click Event
             card.OnBorrowClicked += (s, e) => {
@@ -285,6 +293,11 @@ namespace Library_Management_System.Forms
 
             // 3. Reload Data
             LoadBooksFromDatabase("", currentCategoryId);
+        }
+
+        private void ReaderHomeView_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

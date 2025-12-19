@@ -250,5 +250,9 @@ namespace Library_Management_System.Forms
             }
         }
 
+        private void EditBookView_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }

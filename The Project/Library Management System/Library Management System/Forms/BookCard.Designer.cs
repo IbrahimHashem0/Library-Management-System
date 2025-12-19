@@ -35,7 +35,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Name = "BookCard";
-        //    this.Load += new System.EventHandler(this.BookCard_Load);
+            this.Load += new System.EventHandler(this.BookCard_Load);
             this.ResumeLayout(false);
 
         }

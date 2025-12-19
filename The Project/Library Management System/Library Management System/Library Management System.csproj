@@ -122,6 +122,12 @@
     <Compile Include="Forms\AdminDashboardView.Designer.cs">
       <DependentUpon>AdminDashboardView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FavoritesUser.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\FavoritesUser.Designer.cs">
+      <DependentUpon>FavoritesUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\BorrowHistoryItem.cs" />
     <Compile Include="Models\Borrowing.cs" />
@@ -143,8 +149,14 @@
     <Compile Include="Repositories\QuoteRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\SecurityService.cs" />
+    <EmbeddedResource Include="Forms\AddBookView.resx">
+      <DependentUpon>AddBookView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\BookCard.resx">
       <DependentUpon>BookCard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\EditBookView.resx">
+      <DependentUpon>EditBookView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
@@ -154,6 +166,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\QuoteView.resx">
       <DependentUpon>QuoteView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\FavoritesUser.resx">
+      <DependentUpon>FavoritesUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ReaderHomeView.resx">
+      <DependentUpon>ReaderHomeView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
