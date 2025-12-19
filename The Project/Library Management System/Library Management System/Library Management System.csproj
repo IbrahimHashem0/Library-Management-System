@@ -95,6 +95,12 @@
     <Compile Include="Forms\ManageBooksView.Designer.cs">
       <DependentUpon>ManageBooksView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\ManageBorrowingView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\ManageBorrowingView.Designer.cs">
+      <DependentUpon>ManageBorrowingView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ManageUsersView.cs">
       <SubType>UserControl</SubType>
     </Compile>

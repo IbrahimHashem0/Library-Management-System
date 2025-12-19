@@ -94,3 +94,8 @@ C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Lib
 C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.FavoritesUserControl.resources
 C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.ReaderHomeView.resources
 C:\Users\aaahm\source\repos\TechNoovaa\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.NotificationsUserControl.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.AddBookView.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.EditBookView.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.FavoritesUserControl.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.ReaderHomeView.resources
+E:\Materials 2025-2026\Software Engineering\Project\Library-Management-System\The Project\Library Management System\Library Management System\obj\Debug\Library_Management_System.Forms.NotificationsUserControl.resources

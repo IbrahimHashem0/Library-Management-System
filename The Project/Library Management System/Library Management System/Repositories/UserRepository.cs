@@ -114,13 +114,43 @@ namespace Library_Management_System.Repositories
         // Delete user logic
         public bool DeleteUser(int id)
         {
-            string query = "DELETE FROM Users WHERE UserID = @ID";
             using (var conn = DatabaseHelper.GetConnection())
-            using (var cmd = new SqlCommand(query, conn))
             {
-                cmd.Parameters.AddWithValue("@ID", id);
                 conn.Open();
-                return cmd.ExecuteNonQuery() > 0;
+                using (var transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        string deleteFines = "DELETE FROM Fines WHERE BorrowingID IN (SELECT BorrowingID FROM Borrowings WHERE UserID = @id)";
+                        using (var cmd1 = new SqlCommand(deleteFines, conn, transaction))
+                        {
+                            cmd1.Parameters.AddWithValue("@id", id);
+                            cmd1.ExecuteNonQuery();
+                        }
+
+                        string deleteBorrowings = "DELETE FROM Borrowings WHERE UserID = @id";
+                        using (var cmd2 = new SqlCommand(deleteBorrowings, conn, transaction))
+                        {
+                            cmd2.Parameters.AddWithValue("@id", id);
+                            cmd2.ExecuteNonQuery();
+                        }
+
+                        string deleteUser = "DELETE FROM Users WHERE UserID = @id";
+                        using (var cmd3 = new SqlCommand(deleteUser, conn, transaction))
+                        {
+                            cmd3.Parameters.AddWithValue("@id", id);
+                            int rows = cmd3.ExecuteNonQuery();
+
+                            transaction.Commit();
+                            return rows > 0;
+                        }
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
             }
         }
 

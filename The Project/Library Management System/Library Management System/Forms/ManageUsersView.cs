@@ -298,7 +298,7 @@ namespace Library_Management_System.Forms
             string userRole = usersGrid.Rows[rowIndex].Cells["Role"].Value.ToString();
             var repo = new UserRepository();
 
-            if (userEmail == "admin@library.com" || userId == 1 || userEmail == _loggedInUser.Email.ToLower())
+            if (userEmail == "admin@library.com" || userEmail == _loggedInUser.Email.ToLower())
             {
                 MessageBox.Show("This account cannot be suspended.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return;
