@@ -220,7 +220,7 @@ namespace Library_Management_System.Forms
 
             if(isbn.Length!=13 && isbn.Length != 10)
             {
-                MessageBox.Show("ISBN should consist of 10 or 13 charachter", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("ISBN should consist of 10 or 13 character", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             // ===== Check for duplicates =====
