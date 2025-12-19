@@ -224,13 +224,11 @@ namespace Library_Management_System.Forms
                 {
                     try
                     {
-                        // تأكدي من أن اسم الكلاس والنيومسبايس صحيح كما في مشروعك
                         Library_Management_System.Repositories.BorrowingRepository borrowRepo = new Library_Management_System.Repositories.BorrowingRepository();
 
-                        // استدعاء دالة الاستعارة
                         string result = borrowRepo.BorrowBook(currentUserID, bookID);
 
-                        MessageBox.Show(result); // سيعرض "Success" أو رسالة خطأ مثل "No copies available"
+                        MessageBox.Show(result); 
                     }
                     catch (Exception ex)
                     {

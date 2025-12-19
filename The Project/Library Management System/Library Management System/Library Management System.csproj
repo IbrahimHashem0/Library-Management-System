@@ -128,6 +128,12 @@
     <Compile Include="Forms\FavoritesUser.Designer.cs">
       <DependentUpon>FavoritesUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\UserNotifications.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\UserNotifications.Designer.cs">
+      <DependentUpon>UserNotifications.cs</DependentUpon>
+    </Compile>
     <Compile Include="Models\Book.cs" />
     <Compile Include="Models\BorrowHistoryItem.cs" />
     <Compile Include="Models\Borrowing.cs" />
@@ -172,6 +178,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ReaderHomeView.resx">
       <DependentUpon>ReaderHomeView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\UserNotifications.resx">
+      <DependentUpon>UserNotifications.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

@@ -12,6 +12,8 @@ namespace Library_Management_System.Forms
 
         private FavoritesUserControl favoritesView;
 
+        NotificationsUserControl notificationsControl;
+
         // UI Components
         private Panel sidebarPanel;
         private Panel contentPanel;
@@ -300,6 +302,7 @@ namespace Library_Management_System.Forms
                 view.BringToFront();
             }
             if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
 
         private void BorrowedBooksBtn_Click(object sender, EventArgs e)
@@ -311,6 +314,7 @@ namespace Library_Management_System.Forms
             contentPanel.Controls.Add(view);
             view.BringToFront();
             if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
 
         private void FavoriteBtn_Click(object sender, EventArgs e)
@@ -323,13 +327,31 @@ namespace Library_Management_System.Forms
             favoritesView.BringToFront();
 
             favoritesView.LoadFavorites(_loggedInUser.UserID);
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
-        private void MyReservationsBtn_Click(object sender, EventArgs e)
-        {
+     
+       
+          private void MyReservationsBtn_Click(object sender, EventArgs e)
+          {
             headerTitleLabel.Text = "Notifications";
             contentPanel.Controls.Clear();
-        }
+            
+            if (notificationsControl == null)
+            {
+                notificationsControl = new NotificationsUserControl();
+            }
 
+            notificationsControl.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(notificationsControl);
+
+            if (favoritesView != null) favoritesView.Visible = false;
+
+            notificationsControl.Visible = true;
+            notificationsControl.BringToFront();
+
+            notificationsControl.Size = contentPanel.ClientSize;
+          }
+        
         private void BillingBtn_Click(object sender, EventArgs e)
         {
             string role = _loggedInUser.Role.ToLower();
@@ -344,6 +366,7 @@ namespace Library_Management_System.Forms
                 SetupBillingView();
             }
             if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
 
         private void LogoutBtn_Click(object sender, EventArgs e)
@@ -353,6 +376,7 @@ namespace Library_Management_System.Forms
             if (log.ShowDialog() == DialogResult.OK) this.Show();
             else this.Close();
             if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
 
         private void ManageBooksBtn_Click(object sender, EventArgs e)
@@ -364,6 +388,7 @@ namespace Library_Management_System.Forms
             contentPanel.Controls.Add(view);
             view.BringToFront();
             if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
 
         private void ManageUsersBtn_Click(object sender, EventArgs e)
@@ -375,6 +400,7 @@ namespace Library_Management_System.Forms
             contentPanel.Controls.Add(view);
             view.BringToFront();
             if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
 
         private void BorrowingBtn_Click(object sender, EventArgs e)
@@ -383,6 +409,7 @@ namespace Library_Management_System.Forms
             contentPanel.Controls.Clear();
 
             if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
         }
         #endregion
     }
