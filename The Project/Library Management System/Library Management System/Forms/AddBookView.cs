@@ -230,7 +230,7 @@ namespace Library_Management_System.Forms
                 MessageBox.Show("Author Name should conatin only letters", "Invalid Author Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (CheckName.validName(author))
+            if (CheckName.validName(publisher))
             {
                 MessageBox.Show("Publisher Name should conatin only letters", "Invalid Publisher Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
