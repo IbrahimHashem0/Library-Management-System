@@ -412,8 +412,13 @@ namespace Library_Management_System.Forms
 
         private void BorrowingBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "Borrowing && Returns";
+            headerTitleLabel.Text = "Borrowing & Returns Management";
             contentPanel.Controls.Clear();
+
+            ManageBorrowingView view = new ManageBorrowingView();
+            view.Dock = DockStyle.Fill;
+            contentPanel.Controls.Add(view);
+            view.BringToFront();
 
             if (favoritesView != null) favoritesView.Visible = false;
             if (notificationsControl != null) notificationsControl.Visible = false;
