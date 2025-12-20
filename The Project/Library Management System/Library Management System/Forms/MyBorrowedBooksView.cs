@@ -95,6 +95,7 @@ namespace Library_Management_System.Models
                 grid.DataSource = data;
 
                 if (grid.Columns["BorrowingID"] != null) grid.Columns["BorrowingID"].Visible = false;
+                if (grid.Columns["UserName"] != null) grid.Columns["UserName"].Visible = false;
                 if (grid.Columns["BorrowDate"] != null) grid.Columns["BorrowDate"].HeaderText = "Borrow Date";
                 if (grid.Columns["DueDate"] != null) grid.Columns["DueDate"].HeaderText = "Return Date";
 
