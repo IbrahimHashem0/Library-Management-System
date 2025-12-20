@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Library_Management_System.Models;
+using Library_Management_System.Repositories;
+using Library_Management_System.Services;
+using LibrarySystem.Services;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Library_Management_System.Models;
-using Library_Management_System.Repositories;
-using LibrarySystem.Services;
 
 namespace Library_Management_System.Forms
 {
@@ -87,7 +88,11 @@ namespace Library_Management_System.Forms
                 MessageBox.Show("All fields are required!", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
+            if(CheckName.validName(txtName.Text))
+            {
+                MessageBox.Show("User Name should conatin only letters","Invalid UserName",MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             var repo = new UserRepository();
             string email = txtEmail.Text.Trim();
 

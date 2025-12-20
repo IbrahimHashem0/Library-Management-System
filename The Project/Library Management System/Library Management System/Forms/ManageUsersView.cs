@@ -1,10 +1,11 @@
-﻿using System;
-using System.Drawing;
-using System.Windows.Forms;
-using System.Collections.Generic;
-using Library_Management_System.Models;
+﻿using Library_Management_System.Models;
 using Library_Management_System.Repositories;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace Library_Management_System.Forms
 {
@@ -17,6 +18,7 @@ namespace Library_Management_System.Forms
         private TextBox searchBox;
         private ComboBox roleCombo;
 
+       
         public ManageUsersView(User user)
         {
             // Ensure session user is provided
@@ -163,6 +165,7 @@ namespace Library_Management_System.Forms
                 usersGrid.Rows.Add(u.UserID, u.FullName, u.Email, u.Role, u.Status);
             }
             usersGrid.ResumeLayout();   
+            
         }
 
         private void OpenAddUserForm(string role)

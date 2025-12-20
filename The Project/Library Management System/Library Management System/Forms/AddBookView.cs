@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Library_Management_System.Models;
+using Library_Management_System.Repositories;
+using Library_Management_System.Services;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -7,8 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Library_Management_System.Models;
-using Library_Management_System.Repositories;
+using System.Xml.Linq;
 
 namespace Library_Management_System.Forms
 {
@@ -217,8 +219,24 @@ namespace Library_Management_System.Forms
             int year = (int)yearNum.Value;
             int categoryId = (int)categoryCombo.SelectedValue;
             int totalCopies = (int)totalCopiesNum.Value;
+            if (CheckName.validName(title))
+            {
+                MessageBox.Show("Title should conatin only letters", "Invalid Title", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
-            if(isbn.Length!=13 && isbn.Length != 10)
+            if (CheckName.validName(author))
+            {
+                MessageBox.Show("Author Name should conatin only letters", "Invalid Author Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (CheckName.validName(author))
+            {
+                MessageBox.Show("Publisher Name should conatin only letters", "Invalid Publisher Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (isbn.Length!=13 && isbn.Length != 10)
             {
                 MessageBox.Show("ISBN should consist of 10 or 13 character", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

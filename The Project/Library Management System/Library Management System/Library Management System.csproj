@@ -169,6 +169,7 @@
     <Compile Include="Repositories\NotificationRepository.cs" />
     <Compile Include="Repositories\QuoteRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
+    <Compile Include="Services\CheckName.cs" />
     <Compile Include="Services\SecurityService.cs" />
     <EmbeddedResource Include="Forms\AddBookView.resx">
       <DependentUpon>AddBookView.cs</DependentUpon>
