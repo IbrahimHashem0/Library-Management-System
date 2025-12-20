@@ -115,7 +115,7 @@ namespace Library_Management_System.Forms
         }
 
 
-        public bool IsValidEmail(string email)
+        public static bool IsValidEmail(string email)
         {
             
             string pattern = @"^[^@\s]+@[^@\s]+\.[^@\s]+$";

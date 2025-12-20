@@ -135,7 +135,7 @@ namespace Library_Management_System.Forms
             if (currentWidth < 400)
             {
                 currentWidth = 400;
-            }
+            } 
 
             // Calculate card width based on this "safe" width
             int cardWidth = currentWidth - 30;

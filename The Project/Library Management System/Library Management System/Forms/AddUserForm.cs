@@ -97,7 +97,12 @@ namespace Library_Management_System.Forms
                                 "Duplicate User", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
+            if(!RegisterView.IsValidEmail(email))
+            {
+                MessageBox.Show("This email is Invalid. Please enter a valid email in.", "Invalid Email", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtEmail.Focus();
+                return;
+            }
             var newUser = new User
             {
                 FullName = txtName.Text.Trim(),

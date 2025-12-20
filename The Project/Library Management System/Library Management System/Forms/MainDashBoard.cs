@@ -298,7 +298,7 @@ namespace Library_Management_System.Forms
             headerTitleLabel.Text = "Dashboard Overview";
             contentPanel.Controls.Clear();
 
-            if (_loggedInUser.Role.ToLower() == "admin")
+            if (_loggedInUser.Role.ToLower() == "admin"|| _loggedInUser.Role.ToLower() == "librarian")
             {
                 AdminDashboardView dashboard = new AdminDashboardView();
                 dashboard.Dock = DockStyle.Fill;
@@ -446,7 +446,7 @@ namespace Library_Management_System.Forms
 
         private void BorrowingBtn_Click(object sender, EventArgs e)
         {
-            headerTitleLabel.Text = "Borrowing & Returns Management";
+            headerTitleLabel.Text = "Borrowings && Returns";
             contentPanel.Controls.Clear();
 
             ManageBorrowingView view = new ManageBorrowingView();

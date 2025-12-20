@@ -156,16 +156,22 @@ namespace Library_Management_System.Forms
             var repo = new UserRepository();
             string role = roleCombo.SelectedItem?.ToString() ?? "All Roles";
             var users = repo.GetAllUsers(searchBox.Text, role);
-
+            usersGrid.SuspendLayout();
             usersGrid.Rows.Clear();
             foreach (var u in users)
             {
                 usersGrid.Rows.Add(u.UserID, u.FullName, u.Email, u.Role, u.Status);
             }
+            usersGrid.ResumeLayout();   
         }
 
         private void OpenAddUserForm(string role)
         {
+            if(role.ToLower() == "librarian" && _loggedInUser.Role.ToLower() == "librarian")
+            {
+                MessageBox.Show("Only admin can add a librarian", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             using (AddUserForm addUserForm = new AddUserForm(role))
             {
                 if (addUserForm.ShowDialog() == DialogResult.OK)
@@ -248,24 +254,17 @@ namespace Library_Management_System.Forms
             string userRole = usersGrid.Rows[rowIndex].Cells["Role"].Value.ToString();
             var repo = new UserRepository();
 
-            if (userEmail == "admin@library.com")
+            if (userRole.ToLower() == "admin")
             {
                 MessageBox.Show("The Main Admin account cannot be deleted.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return;
             }
 
-            if (_loggedInUser.Role == "Admin" && _loggedInUser.Email.ToLower() != "admin@library.com")
-            {
-                if (userRole == "Admin")
-                {
-                    MessageBox.Show("Only the Master Admin can delete other Admin accounts.", "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-            }
+            
 
-            if (_loggedInUser.Role == "Librarian")
+            if (_loggedInUser.Role.ToLower() == "librarian")
             {
-                if (userRole == "Admin" || userRole == "Librarian")
+                if (userRole.ToLower() == "admin" || userRole.ToLower() == "librarian")
                 {
                     MessageBox.Show("Librarians can only delete Readers.", "Permission Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
@@ -278,11 +277,7 @@ namespace Library_Management_System.Forms
                 return;
             }
 
-            if (userRole == "Admin" && repo.GetAdminCount() <= 1)
-            {
-                MessageBox.Show("Cannot delete the only remaining Admin.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                return;
-            }
+            
 
             if (MessageBox.Show($"Are you sure you want to PERMANENTLY delete this user?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
@@ -298,26 +293,21 @@ namespace Library_Management_System.Forms
             string userRole = usersGrid.Rows[rowIndex].Cells["Role"].Value.ToString();
             var repo = new UserRepository();
 
-            if (userEmail == "admin@library.com" || userEmail == _loggedInUser.Email.ToLower())
+            if (userRole.ToLower() == "admin" || userEmail == _loggedInUser.Email.ToLower())
             {
                 MessageBox.Show("This account cannot be suspended.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 return;
             }
 
-            if (_loggedInUser.Role == "Librarian")
+            if (_loggedInUser.Role.ToLower() == "librarian")
             {
-                if (userRole == "Admin" || userRole == "Librarian")
+                if (userRole.ToLower() == "admin" || userRole.ToLower() == "librarian")
                 {
                     MessageBox.Show("Librarians can only suspend Reader accounts.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                     return;
                 }
             }
 
-            if (_loggedInUser.Role == "Admin" && _loggedInUser.Email.ToLower() != "admin@library.com" && userRole == "Admin")
-            {
-                MessageBox.Show("Only the Master Admin can suspend other Admin accounts.", "Security", MessageBoxButtons.OK, MessageBoxIcon.Hand);
-                return;
-            }
 
             if (userRole == "Admin" && currentStatus == "Active" && repo.GetAdminCount() <= 1)
             {
