@@ -358,10 +358,18 @@ namespace Library_Management_System.Forms
 
             notificationsControl.Size = contentPanel.ClientSize;
           }
-        
+
         private void BillingBtn_Click(object sender, EventArgs e)
         {
             string role = _loggedInUser.Role.ToLower();
+
+            // إخفاء الكنترولات العامة الأخرى لضمان نظافة الواجهة
+            if (favoritesView != null) favoritesView.Visible = false;
+            if (notificationsControl != null) notificationsControl.Visible = false;
+
+            // تنظيف لوحة العرض الرئيسية قبل إضافة الكنترول الجديد
+            contentPanel.Controls.Clear();
+
             if (role == "admin" || role == "librarian")
             {
                 headerTitleLabel.Text = "Manage System Bills";
@@ -369,11 +377,17 @@ namespace Library_Management_System.Forms
             }
             else
             {
+                // --- Reader View Logic ---
                 headerTitleLabel.Text = "My Bills";
-                SetupBillingView();
+
+                // استدعاء الـ User Control الجديد وتمرير المستخدم المسجل حالياً
+                MyBillsView billsView = new MyBillsView(_loggedInUser);
+                billsView.Dock = DockStyle.Fill;
+
+                // إضافة الكنترول إلى لوحة المحتوى
+                contentPanel.Controls.Add(billsView);
+                billsView.BringToFront();
             }
-            if (favoritesView != null) favoritesView.Visible = false;
-            if (notificationsControl != null) notificationsControl.Visible = false;
         }
 
         private void LogoutBtn_Click(object sender, EventArgs e)

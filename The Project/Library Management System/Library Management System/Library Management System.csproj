@@ -107,6 +107,12 @@
     <Compile Include="Forms\ManageUsersView.Designer.cs">
       <DependentUpon>ManageUsersView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\MyBillsView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\MyBillsView.Designer.cs">
+      <DependentUpon>MyBillsView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\QuoteView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -155,6 +161,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\AdminDashboardRepository.cs" />
+    <Compile Include="Repositories\BillingRepository.cs" />
     <Compile Include="Repositories\BookRepository.cs" />
     <Compile Include="Repositories\BorrowingRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
