@@ -156,6 +156,7 @@
     <Compile Include="Forms\MyBorrowedBooksView.Designer.cs">
       <DependentUpon>MyBorrowedBooksView.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\Notification.cs" />
     <Compile Include="Models\Quote.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
@@ -165,6 +166,7 @@
     <Compile Include="Repositories\BookRepository.cs" />
     <Compile Include="Repositories\BorrowingRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\NotificationRepository.cs" />
     <Compile Include="Repositories\QuoteRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Services\SecurityService.cs" />

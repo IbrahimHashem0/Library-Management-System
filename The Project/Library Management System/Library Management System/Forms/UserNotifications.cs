@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Library_Management_System.Models;
+using Library_Management_System.Repositories;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Threading;
@@ -10,23 +13,33 @@ namespace Library_Management_System.Forms
     {
         private FlowLayoutPanel flowNotifications;
         private Button btnMarkRead;
-
-        public NotificationsUserControl()
+        private int userId;
+        public NotificationsUserControl(User user)
         {
             InitializeNotificationPage();
 
-            // Sample Data
-            AddNotification("Book Return Reminder",
-                "You need to return \"The Midnight Library\" by tomorrow.",
-                "2 hours ago", true);
+            // Store user for reloading
+            this.userId = user.UserID;
 
-            AddNotification("Book Return Reminder",
-                "You need to return \"The Midnight Library\" by tomorrow.",
-                "2 hours ago", false);
+            // Load initial data
+            LoadNotifications();
+        }
 
-            AddNotification("Book Return Reminder",
-                "You need to return \"The Midnight Library\" by tomorrow.",
-                "2 hours ago", true);
+        public void LoadNotifications()
+        {
+            // Clear existing notifications (except title and button if they are in the same container, 
+            // but here flowNotifications contains the cards, so we clear THAT)
+            flowNotifications.Controls.Clear();
+
+            NotificationRepository rep = new NotificationRepository();
+            List<Notification> userNotif = rep.GetUserNotifications(userId);
+
+            foreach (var notif in userNotif)
+            {
+                AddNotification(notif.NotificationID, notif.Title, notif.Message, notif.CreatedAt.ToShortDateString(), notif.IsRead);
+            }
+
+            CheckIfAllRead();
         }
 
         private void InitializeNotificationPage()
@@ -63,14 +76,16 @@ namespace Library_Management_System.Forms
                 {
                     if (c is Panel card)
                     {
-                       card.Tag = false;
-
+                        var data = (NotificationTagData)card.Tag;
+                        data.IsUnread = false;
+                        card.Tag = data;
                         card.Invalidate();
                     }
                 }
 
                 btnMarkRead.Enabled = false;
                 btnMarkRead.Text = "All Read";
+                CheckIfAllRead();
             };
             btnMarkRead.FlatAppearance.BorderSize = 0;
 
@@ -90,7 +105,9 @@ namespace Library_Management_System.Forms
             {
                 if (c is Panel card)
                 {
-                    card.Tag = false; // Read
+                    var data = (NotificationTagData)card.Tag;
+                    data.IsUnread = false;
+                    card.Tag = data;
                     card.BackColor = Color.White;
 
                     card.Invalidate();
@@ -100,7 +117,7 @@ namespace Library_Management_System.Forms
             flowNotifications.Resize += (s, e) =>
             {
                 foreach (Control c in flowNotifications.Controls)
-                    c.Width = flowNotifications.ClientSize.Width - 25;
+                    c.Width = flowNotifications.ClientSize.Width - 30;
             };
 
             this.Controls.Add(lblTitle);
@@ -108,77 +125,127 @@ namespace Library_Management_System.Forms
             this.Controls.Add(flowNotifications);
         }
 
-        public void AddNotification(string title, string message, string time, bool isUnread)
+        public void AddNotification(int notifID,string title, string message, string time, bool isUnread)
         {
+            Cursor initialCursor = isUnread ? Cursors.Hand : Cursors.Default;
+
+            int currentWidth = flowNotifications.ClientSize.Width;
+
+           
+            if (currentWidth < 400)
+            {
+                currentWidth = 400;
+            }
+
+            // Calculate card width based on this "safe" width
+            int cardWidth = currentWidth - 30;
+            // 2. Create the Card
             Panel card = new Panel
             {
-                Width = flowNotifications.ClientSize.Width - 25,
-                Height = 110,
+                Width = cardWidth,
                 Margin = new Padding(0, 0, 0, 15),
-                Tag = isUnread   // true = Unread, false = Read
+                Tag = new NotificationTagData { IsUnread = isUnread, ID = notifID },
+                Cursor = initialCursor,
+                Height = 100 // Default height, will be adjusted later
             };
 
-
-
-            // Rounded Border
-            card.Paint += (s, e) =>
-            {
-                bool isunread = (bool)card.Tag;
-
-                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-
-                // Background
-                using (Brush bg = new SolidBrush(
-                    isunread ? Color.FromArgb(235, 242, 255) : Color.White))
-                {
-                    e.Graphics.FillRectangle(bg, card.ClientRectangle);
-                }
-
-                // Border (Unread بس)
-                if (isunread)
-                {
-                    DrawRoundedRectangle(
-                        e.Graphics,
-                        new Pen(Color.FromArgb(200, 215, 255), 1),
-                        card.ClientRectangle,
-                        12
-                    );
-                }
-            };
-
-
-
-            // Title
+            // 3. Title Label
             Label lblTitle = new Label
             {
                 Text = title,
                 Font = new Font("Segoe UI", 11F, FontStyle.Bold),
-                Location = new Point(15, 10),
-                AutoSize = true
+                Location = new Point(25, 12),
+                AutoSize = true,
+                BackColor = Color.Transparent,
+                Cursor = initialCursor
             };
 
-            // Message
+            // 4. Message Label (With Wrapping Fix)
             Label lblMsg = new Label
             {
                 Text = message,
                 Font = new Font("Segoe UI", 10F),
                 ForeColor = Color.DimGray,
-                Location = new Point(15, 38),
-                Size = new Size(card.Width - 30, 35)
+                Location = new Point(25, 40),
+                AutoSize = true,
+
+                // This ensures the text wraps properly instead of stacking vertically
+                MaximumSize = new Size(cardWidth - 5, 0),
+
+                BackColor = Color.Transparent,
+                Cursor = initialCursor
             };
 
-            // Time
+            // Add Msg now to calculate height
+            card.Controls.Add(lblMsg);
+
+            // 5. Time Label
             Label lblTime = new Label
             {
                 Text = time,
                 Font = new Font("Segoe UI", 8F),
                 ForeColor = Color.Gray,
-                Location = new Point(15, 78),
-                AutoSize = true
+                AutoSize = true,
+                BackColor = Color.Transparent,
+                Cursor = initialCursor,
+                // Position relative to the bottom of the message
+                Location = new Point(25, lblMsg.Bottom + 5)
             };
 
+            // 6. Adjust Card Height dynamically
+            card.Height = lblTime.Bottom + 15;
+
+            // 7. Paint Logic
+            card.Paint += (s, e) =>
+            {
+                var data = (NotificationTagData)card.Tag;
+                bool isCurrentUnread = data.IsUnread;
+                e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+
+                using (Brush bg = new SolidBrush(isCurrentUnread ? Color.FromArgb(235, 242, 255) : Color.White))
+                {
+                    e.Graphics.FillRectangle(bg, card.ClientRectangle);
+                }
+
+                if (isCurrentUnread)
+                {
+                    Rectangle borderRect = card.ClientRectangle;
+                    borderRect.Inflate(-1, -1);
+                    DrawRoundedRectangle(e.Graphics, new Pen(Color.FromArgb(100, 149, 237), 1), borderRect, 12);
+                }
+            };
+
+            // 8. Click Events
+            EventHandler markAsReadAction = (sender, e) =>
+            {
+                Control clickedControl = sender as Control;
+                Panel targetCard = (clickedControl is Panel) ? (Panel)clickedControl : (Panel)clickedControl.Parent;
+                var data = (NotificationTagData)targetCard.Tag;
+
+                if (data.IsUnread)
+                {
+                    data.IsUnread = false;
+                    targetCard.Tag = data; // Update tag back
+                    targetCard.Cursor = Cursors.Default;
+                    foreach (Control child in targetCard.Controls) child.Cursor = Cursors.Default;
+
+                    targetCard.Invalidate();
+                    CheckIfAllRead();
+                    try
+                    {
+                        var repo = new NotificationRepository();
+                        repo.MarkAsRead(data.ID);
+                    }
+                    catch (Exception ee){ MessageBox.Show(ee.ToString(),"Error",MessageBoxButtons.OK,MessageBoxIcon.Error); }
+                }
+            };
+
+            card.Click += markAsReadAction;
+            lblTitle.Click += markAsReadAction;
+            lblMsg.Click += markAsReadAction;
+            lblTime.Click += markAsReadAction;
+
             card.Controls.Add(lblTitle);
-            card.Controls.Add(lblMsg);
             card.Controls.Add(lblTime);
 
             flowNotifications.Controls.Add(card);
@@ -203,5 +270,47 @@ namespace Library_Management_System.Forms
             path.CloseFigure();
             return path;
         }
+        private void CheckIfAllRead()
+        {
+            bool anyUnread = false;
+
+            // Loop through all panels in the flow layout
+            foreach (Control c in flowNotifications.Controls)
+            {
+                if (c is Panel card)
+                {
+                    // If we find ONE unread card, stop looking
+                    var data = (NotificationTagData)card.Tag;
+                    if (data.IsUnread)
+                    {
+                        anyUnread = true;
+                        NotificationRepository repository = new NotificationRepository();
+
+                        repository.MarkAsRead(data.ID);
+                        break;
+                    }
+                }
+            }
+
+            // Update the button based on the result
+            if (anyUnread)
+            {
+                btnMarkRead.Enabled = true;
+                btnMarkRead.Text = "Mark All as Read";
+                btnMarkRead.BackColor = Color.FromArgb(90, 120, 240); // Blue
+            }
+            else
+            {
+                btnMarkRead.Enabled = false;
+                btnMarkRead.Text = "All Read";
+                btnMarkRead.BackColor = Color.LightGray; // Gray to look disabled
+            }
+        }
+    }
+
+    public class NotificationTagData
+    {
+        public bool IsUnread { get; set; }
+        public int ID { get; set; }
     }
 }

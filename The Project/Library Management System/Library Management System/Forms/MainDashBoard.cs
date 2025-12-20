@@ -1,5 +1,8 @@
-﻿using Library_Management_System.Models;
+﻿using Library_Management_System.Data;
+using Library_Management_System.Models;
+using Library_Management_System.Repositories;
 using System;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -25,15 +28,16 @@ namespace Library_Management_System.Forms
         private Button dashboardBtn, catalogBtn, myFavoritesBtn, myReservationsBtn, billingBtn;
         private Button manageBooksBtn, manageUsersBtn;
         private Button borrowingBtn;
-
+        private User user;
         private const string SearchPlaceholderText = "Search by Title, Author, or ISBN...";
 
         public MainDashBoard(User user)
         {
+            this.user = user;
             _loggedInUser = user;
             InitializeComponent();
             ApplyRoleBasedUI();
-
+            
             favoritesView = new FavoritesUserControl();
             favoritesView.Dock = DockStyle.Fill;
             favoritesView.Visible = false; 
@@ -336,18 +340,20 @@ namespace Library_Management_System.Forms
             favoritesView.LoadFavorites(_loggedInUser.UserID);
             if (notificationsControl != null) notificationsControl.Visible = false;
         }
-     
-       
-          private void MyReservationsBtn_Click(object sender, EventArgs e)
-          {
+
+
+        private void MyReservationsBtn_Click(object sender, EventArgs e)
+        {
             headerTitleLabel.Text = "Notifications";
             contentPanel.Controls.Clear();
-            
+
             if (notificationsControl == null)
             {
-                notificationsControl = new NotificationsUserControl();
+                notificationsControl = new NotificationsUserControl(user);
             }
-
+            NotificationRepository repository = new NotificationRepository();
+            repository.CheckAndGenerateOverdueNotifications(user.UserID);
+            notificationsControl.LoadNotifications();
             notificationsControl.Dock = DockStyle.Fill;
             contentPanel.Controls.Add(notificationsControl);
 
@@ -357,7 +363,21 @@ namespace Library_Management_System.Forms
             notificationsControl.BringToFront();
 
             notificationsControl.Size = contentPanel.ClientSize;
-          }
+        }
+        public void MarkAsRead(int notificationId)
+        {
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+                string query = "UPDATE Notifications SET IsRead = 1 WHERE NotificationID = @ID";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@ID", notificationId);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
 
         private void BillingBtn_Click(object sender, EventArgs e)
         {

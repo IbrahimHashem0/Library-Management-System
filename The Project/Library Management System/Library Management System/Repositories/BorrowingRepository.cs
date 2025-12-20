@@ -1,5 +1,7 @@
 ﻿using Library_Management_System.Data;
 using Library_Management_System.Models;
+using Library_Management_System.Repositories;
+
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -56,18 +58,20 @@ namespace Library_Management_System.Repositories
 
         public string BorrowBook(int userId, int bookId)
         {
+            // We need the title for the notification later, so let's track it
+            string bookTitle = "";
+
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
 
-                // 1. --- NEW CHECK: Does user already have this book? ---
-                // We look for any record of this book for this user that is NOT 'Returned'
+                // 1. --- Check for duplicates ---
                 string duplicateCheckQuery = @"
             SELECT COUNT(*) 
             FROM Borrowings 
             WHERE UserID = @UserID 
               AND BookID = @BookID 
-              AND Status IN ('Borrowed', 'Overdue', 'borrowed')"; // Check your DB casing!
+              AND Status IN ('Borrowed', 'Overdue', 'borrowed')";
 
                 using (var cmdCheckDup = new SqlCommand(duplicateCheckQuery, conn))
                 {
@@ -80,21 +84,26 @@ namespace Library_Management_System.Repositories
                         return "You already have a copy of this book not returned yet.";
                     }
                 }
-                // ---------------------------------------------------------
 
                 using (var transaction = conn.BeginTransaction())
                 {
                     try
                     {
-                        // 2. Check Stock
-                        string checkQuery = "SELECT AvailableCopies FROM Books WHERE BookID = @BookID";
+                        // 2. Check Stock AND Get Title
+                        string checkQuery = "SELECT AvailableCopies, Title FROM Books WHERE BookID = @BookID";
                         int available = 0;
 
                         using (var cmdCheck = new SqlCommand(checkQuery, conn, transaction))
                         {
                             cmdCheck.Parameters.AddWithValue("@BookID", bookId);
-                            object result = cmdCheck.ExecuteScalar();
-                            if (result != null) available = Convert.ToInt32(result);
+                            using (var reader = cmdCheck.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    available = Convert.ToInt32(reader["AvailableCopies"]);
+                                    bookTitle = reader["Title"].ToString();
+                                }
+                            }
                         }
 
                         if (available <= 0) return "Sorry, this book is currently out of stock.";
@@ -120,6 +129,18 @@ namespace Library_Management_System.Repositories
                         }
 
                         transaction.Commit();
+
+                        // --- NEW: Send Notification ---
+                        // We do this AFTER commit to ensure we don't notify if the transaction fails.
+                        // Ideally checking connection state or using a new connection if needed, 
+                        // but usually acceptable to call a separate repo method here.
+                        try
+                        {
+                            var notifRepo = new NotificationRepository();
+                            notifRepo.AddNotification(userId, "Borrow Success", $"You successfully borrowed '{bookTitle}'. Due date is in 14 days.");
+                        }
+                        catch { /* Fail silently on notification error to not confuse user about borrow success */ }
+
                         return "Success";
                     }
                     catch (Exception ex)
@@ -184,6 +205,9 @@ namespace Library_Management_System.Repositories
         // 2. NEW METHOD: RETURN BOOK
         public void ReturnBook(int borrowingId)
         {
+            int userId = 0;
+            string bookTitle = "";
+
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
@@ -191,13 +215,26 @@ namespace Library_Management_System.Repositories
                 {
                     try
                     {
-                        // A. Get BookID first to update stock
+                        // A. Get BookID, TIitle  AND UserID first (needed for stock update and notification)
                         int bookId = 0;
-                        string getBookIdQuery = "SELECT BookID FROM Borrowings WHERE BorrowingID = @ID";
-                        using (var cmdGet = new SqlCommand(getBookIdQuery, conn, transaction))
+                        string getBookInfoQuery = @"
+                            SELECT br.BookID, br.UserID, b.Title 
+                            FROM Borrowings br
+                            JOIN Books b ON br.BookID = b.BookID
+                            WHERE br.BorrowingID = @ID";
+
+                        using (var cmdGet = new SqlCommand(getBookInfoQuery, conn, transaction))
                         {
                             cmdGet.Parameters.AddWithValue("@ID", borrowingId);
-                            bookId = (int)cmdGet.ExecuteScalar();
+                            using (var reader = cmdGet.ExecuteReader())
+                            {
+                                if (reader.Read())
+                                {
+                                    bookId = (int)reader["BookID"];
+                                    userId = (int)reader["UserID"];
+                                    bookTitle = reader["Title"].ToString();
+                                }
+                            }
                         }
 
                         // B. Update Borrowing Record (Set ReturnDate and Status)
@@ -220,6 +257,17 @@ namespace Library_Management_System.Repositories
                         }
 
                         transaction.Commit();
+
+                        // --- NEW: Send Notification ---
+                        try
+                        {
+                            if (userId > 0)
+                            {
+                                var notifRepo = new NotificationRepository();
+                                notifRepo.AddNotification(userId, "Return Success", $"You have successfully returned '{bookTitle}'. Thank you!");
+                            }
+                        }
+                        catch { }
                     }
                     catch
                     {
