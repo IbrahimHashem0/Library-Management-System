@@ -286,7 +286,7 @@ namespace Library_Management_System.Repositories
                                     // 1. Create Fine Record
                                     string insertFineQuery = @"
                                 INSERT INTO Payments (UserID, BookID, BorrowingPrice, PaymentDate, Status) 
-                                VALUES (@UserID, @BookID, @Price, GETDATE(), 'Fine')";
+                                VALUES (@UserID, @BookID, @Price, GETDATE(), 'Pending')";
 
                                     using (var cmdFine = new SqlCommand(insertFineQuery, conn, transaction))
                                     {
