@@ -72,20 +72,23 @@ namespace Library_Management_System.Forms
             };
             btnMarkRead.Click += (s, e) =>
             {
+                NotificationRepository repository = new NotificationRepository();
                 foreach (Control c in flowNotifications.Controls)
                 {
                     if (c is Panel card)
                     {
-                        var data = (NotificationTagData)card.Tag;
-                        data.IsUnread = false;
-                        card.Tag = data;
-                        card.Invalidate();
+                        var data = (NotificationTagData)c.Tag;
+                        if (data.IsUnread)
+                        {
+                            
+                            repository.MarkAsRead(data.ID);
+                        }
                     }
                 }
-
                 btnMarkRead.Enabled = false;
                 btnMarkRead.Text = "All Read";
                 CheckIfAllRead();
+                LoadNotifications();
             };
             btnMarkRead.FlatAppearance.BorderSize = 0;
 
