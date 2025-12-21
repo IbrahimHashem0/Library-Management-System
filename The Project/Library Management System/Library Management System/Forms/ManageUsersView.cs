@@ -18,7 +18,7 @@ namespace Library_Management_System.Forms
         private TextBox searchBox;
         private ComboBox roleCombo;
 
-       
+
         public ManageUsersView(User user)
         {
             // Ensure session user is provided
@@ -164,13 +164,13 @@ namespace Library_Management_System.Forms
             {
                 usersGrid.Rows.Add(u.UserID, u.FullName, u.Email, u.Role, u.Status);
             }
-            usersGrid.ResumeLayout();   
-            
+            usersGrid.ResumeLayout();
+
         }
 
         private void OpenAddUserForm(string role)
         {
-            if(role.ToLower() == "librarian" && _loggedInUser.Role.ToLower() == "librarian")
+            if (role.ToLower() == "librarian" && _loggedInUser.Role.ToLower() == "librarian")
             {
                 MessageBox.Show("Only admin can add a librarian", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -263,7 +263,7 @@ namespace Library_Management_System.Forms
                 return;
             }
 
-            
+
 
             if (_loggedInUser.Role.ToLower() == "librarian")
             {
@@ -280,11 +280,14 @@ namespace Library_Management_System.Forms
                 return;
             }
 
-            
+
 
             if (MessageBox.Show($"Are you sure you want to PERMANENTLY delete this user?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
             {
-                if (repo.DeleteUser(userId)) { LoadData(); }
+                if (repo.DeleteUser(userId)) {
+                    MessageBox.Show("User and all associated records have been deleted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadData(); 
+                }
             }
         }
 
@@ -318,7 +321,9 @@ namespace Library_Management_System.Forms
                 return;
             }
 
-            if (repo.ToggleUserStatus(userId, currentStatus)) { LoadData(); }
+            if (repo.ToggleUserStatus(userId, currentStatus)) {
+                LoadData(); 
+            }
         }
 
         private GraphicsPath GetRoundedRect(Rectangle bounds, int radius)

@@ -250,44 +250,16 @@ namespace Library_Management_System.Forms
         { }
 
         #region UI Views Setup
-        private void SetupBillingView()
-        {
-            contentPanel.Controls.Clear();
-            Label panelHeader = new Label
-            {
-                Text = "My Bills",
-                Font = new Font("Segoe UI", 24, FontStyle.Bold),
-                ForeColor = Color.Black,
-                Dock = DockStyle.Top,
-                Height = 60,
-                TextAlign = ContentAlignment.BottomLeft
-            };
-            contentPanel.Controls.Add(panelHeader);
-
-            DataGridView billingDataGridView = new DataGridView
-            {
-                Dock = DockStyle.Fill,
-                ReadOnly = true,
-                AllowUserToAddRows = false,
-                AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill,
-                BackgroundColor = Color.White,
-                BorderStyle = BorderStyle.None,
-            };
-            billingDataGridView.Columns.Add("InvoiceID", "Invoice ID");
-            billingDataGridView.Columns.Add("BookTitle", "Book Title");
-            billingDataGridView.Columns.Add("Date", "Date");
-            billingDataGridView.Columns.Add("Price", "Price");
-            billingDataGridView.Columns.Add("Status", "Status");
-
-            contentPanel.Controls.Add(billingDataGridView);
-            billingDataGridView.BringToFront();
-        }
-
         private void SetupAdminBillingView()
         {
             contentPanel.Controls.Clear();
-            Label panelHeader = new Label { Text = "Manage All Bills", Font = new Font("Segoe UI", 24, FontStyle.Bold), Dock = DockStyle.Top, Height = 60 };
-            contentPanel.Controls.Add(panelHeader);
+
+            ManageBillingView adminBillingView = new ManageBillingView();
+            adminBillingView.Dock = DockStyle.Fill;
+
+            // Add to the main panel
+            contentPanel.Controls.Add(adminBillingView);
+            adminBillingView.BringToFront();
         }
         #endregion
 
@@ -457,6 +429,8 @@ namespace Library_Management_System.Forms
             if (favoritesView != null) favoritesView.Visible = false;
             if (notificationsControl != null) notificationsControl.Visible = false;
         }
+
         #endregion
     }
+
 }
