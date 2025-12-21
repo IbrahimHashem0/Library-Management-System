@@ -129,6 +129,21 @@ namespace Library_Management_System.Forms
         private void BtnLogin_Click(object sender, EventArgs e)
         {
             UserRepository repo = new UserRepository();
+            if(userNameTexBox.Text == "" )
+            {
+                MessageBox.Show("Enter an email", "Email textbox is empty", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                userNameTexBox.Focus();
+                return;
+
+            }
+
+            if (passwordTextBox.Text == "")
+            {
+                MessageBox.Show("Enter a password", "Password textbox is empty", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                passwordTextBox.Focus();
+                return;
+
+            }
             var user = repo.Login(userNameTexBox.Text, passwordTextBox.Text);
 
             if (user != null)
@@ -168,7 +183,7 @@ namespace Library_Management_System.Forms
             else
             {
                 userNameTexBox.Focus();
-                MessageBox.Show("Your Email or Password is Incorrect");
+                MessageBox.Show("Your Email or Password is Incorrect","Invalid email or Password", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
     }
