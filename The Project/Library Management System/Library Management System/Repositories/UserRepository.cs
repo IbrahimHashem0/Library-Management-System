@@ -185,7 +185,8 @@ namespace Library_Management_System.Repositories
                                     Role = reader["Role"].ToString(),
                                     CreatedAt = reader["CreatedAt"] != DBNull.Value
                                                 ? (DateTime)reader["CreatedAt"]
-                                                : DateTime.MinValue
+                                                : DateTime.MinValue,
+                                    Status = reader["Status"].ToString()
 
                                 };
                             }

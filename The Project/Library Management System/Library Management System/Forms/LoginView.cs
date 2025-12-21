@@ -133,6 +133,14 @@ namespace Library_Management_System.Forms
 
             if (user != null)
             {
+                if(user.Status != "Active")
+                {
+                    MessageBox.Show("Your Account is suspended. \nContact the mangment to solve the problem", "Account is suspended",MessageBoxButtons.OK,MessageBoxIcon.Warning);
+                    userNameTexBox.Focus();
+                    passwordTextBox.Text = "";
+                    return;
+
+                }
                 MessageBox.Show($"Welcome, {user.Role} {user.FullName}");
 
                 MainDashBoard dashboard = new MainDashBoard(user);
@@ -159,6 +167,7 @@ namespace Library_Management_System.Forms
             }
             else
             {
+                userNameTexBox.Focus();
                 MessageBox.Show("Your Email or Password is Incorrect");
             }
         }
