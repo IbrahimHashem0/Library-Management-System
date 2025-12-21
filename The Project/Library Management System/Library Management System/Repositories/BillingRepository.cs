@@ -1,13 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using Library_Management_System.Data;
+﻿using Library_Management_System.Data;
 using Library_Management_System.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace Library_Management_System.Repositories
 {
     public class BillingRepository
     {
+        public DataTable GetAllPayments()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = @"SELECT p.PaymentID, u.FullName AS [User Name], 
+                         b.Title AS [Book Title], p.BorrowingPrice, p.Status
+                         FROM Payments p
+                         JOIN Users u ON p.UserID = u.UserID
+                         JOIN Books b ON p.BookID = b.BookID";
+
+                SqlDataAdapter adapter = new SqlDataAdapter(query, conn);
+                adapter.Fill(dt);
+            }
+            return dt;
+        }
+
+        // Update Payment Status 
+        public bool UpdatePaymentStatus(int paymentID, string newStatus)
+        {
+            using (SqlConnection conn = DatabaseHelper.GetConnection())
+            {
+                string query = "UPDATE Payments SET Status = @Status WHERE PaymentID = @ID";
+                SqlCommand cmd = new SqlCommand(query, conn);
+                cmd.Parameters.AddWithValue("@Status", newStatus);
+                cmd.Parameters.AddWithValue("@ID", paymentID);
+                conn.Open();
+                return cmd.ExecuteNonQuery() > 0;
+            }
+        }
+
         // Get all bills for a specific user
         public List<BillItem> GetUserBills(int userId)
         {

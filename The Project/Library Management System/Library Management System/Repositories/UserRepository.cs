@@ -112,7 +112,7 @@ namespace Library_Management_System.Repositories
         }
 
         // Delete user logic
-        public bool DeleteUser(int id)
+         public bool DeleteUser(int id)
         {
             using (var conn = DatabaseHelper.GetConnection())
             {
@@ -121,31 +121,45 @@ namespace Library_Management_System.Repositories
                 {
                     try
                     {
-                        string deleteFines = "DELETE FROM Fines WHERE BorrowingID IN (SELECT BorrowingID FROM Borrowings WHERE UserID = @id)";
-                        using (var cmd1 = new SqlCommand(deleteFines, conn, transaction))
+                        string deletePayments = "DELETE FROM Payments WHERE UserID = @ID";
+                        using (var cmd = new SqlCommand(deletePayments, conn, transaction))
                         {
-                            cmd1.Parameters.AddWithValue("@id", id);
-                            cmd1.ExecuteNonQuery();
+                            cmd.Parameters.AddWithValue("@ID", id);
+                            cmd.ExecuteNonQuery();
                         }
 
-                        string deleteBorrowings = "DELETE FROM Borrowings WHERE UserID = @id";
-                        using (var cmd2 = new SqlCommand(deleteBorrowings, conn, transaction))
+                        string deleteBorrowings = "DELETE FROM Borrowings WHERE UserID = @ID";
+                        using (var cmd = new SqlCommand(deleteBorrowings, conn, transaction))
                         {
-                            cmd2.Parameters.AddWithValue("@id", id);
-                            cmd2.ExecuteNonQuery();
+                            cmd.Parameters.AddWithValue("@ID", id);
+                            cmd.ExecuteNonQuery();
                         }
 
-                        string deleteUser = "DELETE FROM Users WHERE UserID = @id";
-                        using (var cmd3 = new SqlCommand(deleteUser, conn, transaction))
+                        string deleteFavorites = "DELETE FROM Favorites WHERE UserID = @ID";
+                        using (var cmd = new SqlCommand(deleteFavorites, conn, transaction))
                         {
-                            cmd3.Parameters.AddWithValue("@id", id);
-                            int rows = cmd3.ExecuteNonQuery();
-
-                            transaction.Commit();
-                            return rows > 0;
+                            cmd.Parameters.AddWithValue("@ID", id);
+                            cmd.ExecuteNonQuery();
                         }
+
+                        string deleteNotifications = "DELETE FROM Notifications WHERE UserID = @ID";
+                        using (var cmd = new SqlCommand(deleteNotifications, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@ID", id);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        string deleteUser = "DELETE FROM Users WHERE UserID = @ID";
+                        using (var cmd = new SqlCommand(deleteUser, conn, transaction))
+                        {
+                            cmd.Parameters.AddWithValue("@ID", id);
+                            cmd.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                        return true;
                     }
-                    catch
+                    catch (Exception)
                     {
                         transaction.Rollback();
                         throw;
