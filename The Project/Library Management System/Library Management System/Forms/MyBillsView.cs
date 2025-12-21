@@ -72,7 +72,7 @@ namespace Library_Management_System.Forms
             
             billsGrid.Columns.Add("BookID", "Book ID");
             billsGrid.Columns.Add("PaymentDate", "Payment Date");
-            billsGrid.Columns.Add("BorrowingPrice", "Borrowing Price");
+            billsGrid.Columns.Add("BorrowingPrice", "Amount");
             billsGrid.Columns.Add("Status", "Status");
 
             this.Controls.Add(billsGrid);
