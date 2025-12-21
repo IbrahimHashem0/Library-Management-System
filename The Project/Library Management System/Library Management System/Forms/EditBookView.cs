@@ -16,12 +16,12 @@ namespace Library_Management_System.Forms
         private TextBox titleTxt;
         private TextBox authorTxt;
         private TextBox isbnTxt;
-        private TextBox publisherTxt;
+        private TextBox publisherTxt, BorrowingPricetxt;
         private ComboBox categoryCombo;
         //private NumericUpDown totalCopiesNum;
         private Button saveBtn;
         private Button cancelBtn;
-
+        NumericUpDown totalCopiesNum;
         public EditBookView(int bookId)
         {
             _bookId = bookId;
@@ -52,23 +52,24 @@ namespace Library_Management_System.Forms
             authorTxt = CreateTextBox("Author" , 170);
             isbnTxt = CreateTextBox("ISBN" , 240);
             publisherTxt = CreateTextBox("Publisher" , 310);
+            BorrowingPricetxt = CreateTextBox("Borrowing Price", 360);
 
             //Label copiesLabel = new Label
             //{
-            //    Text = "Total Copies" ,
-            //    Location = new Point(20 , 280) ,
-            //    Font = new Font("Segoe UI" , 10 , FontStyle.Bold) ,
+            //    Text = "Total Copies",
+            //    Location = new Point(20, 390),
+            //    Font = new Font("Segoe UI", 10, FontStyle.Bold),
             //    AutoSize = true
             //};
             //this.Controls.Add(copiesLabel);
 
             //totalCopiesNum = new NumericUpDown
             //{
-            //    Location = new Point(20 , 305) ,
-            //    Width = 300 ,
-            //    Minimum = 0 ,
-            //    Maximum = 10000 ,
-            //    Font = new Font("Segoe UI" , 11)
+            //    Location = new Point(20, 410),
+            //    Width = 300,
+                
+            //    Maximum = 10000,
+            //    Font = new Font("Segoe UI", 11)
             //};
             //this.Controls.Add(totalCopiesNum);
 
@@ -76,7 +77,7 @@ namespace Library_Management_System.Forms
             Label categoryLabel = new Label
             {
                 Text = "Category" ,
-                Location = new Point(20 , 360) ,
+                Location = new Point(20 , 390) ,
                 Font = new Font("Segoe UI" , 11 , FontStyle.Bold) ,
                 AutoSize = true
             };
@@ -84,7 +85,7 @@ namespace Library_Management_System.Forms
 
             categoryCombo = new ComboBox
             {
-                Location = new Point(20 , 385) ,
+                Location = new Point(20 , 415) ,
                 Width = 300 ,
                 Font = new Font("Segoe UI" , 11) ,
                 DropDownStyle = ComboBoxStyle.DropDownList
@@ -96,7 +97,7 @@ namespace Library_Management_System.Forms
             saveBtn = new Button
             {
                 Text = "Save Changes" ,
-                Location = new Point(20 , 420) ,
+                Location = new Point(20 , 450) ,
                 Size = new Size(140 , 40) ,
                 BackColor = Color.FromArgb(79 , 70 , 229) ,
                 ForeColor = Color.White ,
@@ -108,7 +109,7 @@ namespace Library_Management_System.Forms
             cancelBtn = new Button
             {
                 Text = "Cancel" ,
-                Location = new Point(180 , 420) ,
+                Location = new Point(180 , 450) ,
                 Size = new Size(140 , 40) ,
                 FlatStyle = FlatStyle.Flat ,
                 Cursor = Cursors.Hand
@@ -170,8 +171,10 @@ namespace Library_Management_System.Forms
             authorTxt.Text = _currentBook.Author;
             isbnTxt.Text = _currentBook.ISBN ?? "";
             publisherTxt.Text = _currentBook.Publisher ?? "";
-
+            BorrowingPricetxt.Text = _currentBook.BorrowPrice.ToString();
             categoryCombo.SelectedValue = _currentBook.CategoryID;
+            //totalCopiesNum.Value = _currentBook.AvailableCopies; 
+           // totalCopiesNum.Minimum = (int)_currentBook.TotalCopies;
         }
 
         // ================= Save =================
@@ -188,22 +191,31 @@ namespace Library_Management_System.Forms
                 );
                 return;
             }
-
+            //int avlBooks= _currentBook.AvailableCopies;
+            //if ((int)totalCopiesNum.Value > _currentBook.TotalCopies)
+            //{
+            //    avlBooks += ((int)totalCopiesNum.Value - _currentBook.TotalCopies);
+            //}
+            //else
+            //{
+            //    avlBooks = Math.Min(
+            //        _currentBook.AvailableCopies,
+            //        (int)totalCopiesNum.Value
+            //    );
+            //}
             Book updatedBook = new Book
             {
-                BookID = _bookId ,
-                Title = titleTxt.Text.Trim() ,
-                Author = authorTxt.Text.Trim() ,
-                ISBN = string.IsNullOrWhiteSpace(isbnTxt.Text) ? null : isbnTxt.Text.Trim() ,
-                Publisher = string.IsNullOrWhiteSpace(publisherTxt.Text) ? null : publisherTxt.Text.Trim() ,
-                CategoryID = (int)categoryCombo.SelectedValue ,
-                //TotalCopies = (int)totalCopiesNum.Value ,
+                BookID = _bookId,
+                Title = titleTxt.Text.Trim(),
+                Author = authorTxt.Text.Trim(),
+                ISBN = string.IsNullOrWhiteSpace(isbnTxt.Text) ? null : isbnTxt.Text.Trim(),
+                Publisher = string.IsNullOrWhiteSpace(publisherTxt.Text) ? null : publisherTxt.Text.Trim(),
+                CategoryID = (int)categoryCombo.SelectedValue,
+                BorrowPrice = Convert.ToDecimal(BorrowingPricetxt.Text),
+                TotalCopies = _currentBook.TotalCopies,
 
-                // IMPORTANT: don't break borrowing logic
-                //AvailableCopies = Math.Min(
-                //    _currentBook.AvailableCopies ,
-                //    (int)totalCopiesNum.Value
-                //)
+                AvailableCopies = _currentBook.AvailableCopies
+
             };
 
             _bookRepo.UpdateBook(updatedBook);

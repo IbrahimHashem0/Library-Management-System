@@ -17,5 +17,7 @@ namespace Library_Management_System.Models
         public int CategoryID { get; set; }
         public int TotalCopies { get; set; }
         public int AvailableCopies { get; set; }
+        public decimal BorrowPrice { get; set; }
+
     }
 }

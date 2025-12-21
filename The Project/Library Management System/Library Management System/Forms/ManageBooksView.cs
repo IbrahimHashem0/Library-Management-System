@@ -118,6 +118,7 @@ namespace Library_Management_System.Forms
 
             booksGrid.Columns.Add("Title" , "Book Title");
             booksGrid.Columns.Add("Author" , "Author");
+            booksGrid.Columns.Add("BorrowingPrice", "Borrowing Price");
             booksGrid.Columns.Add("Category" , "Category");
             booksGrid.Columns.Add("Total" , "Total Copies");
             booksGrid.Columns.Add("Available" , "Available Copies");
@@ -261,7 +262,8 @@ namespace Library_Management_System.Forms
                     book.BookID ,
                     book.Title ,
                     book.Author ,
-                    book.CategoryID ,
+                    book.BorrowPrice.ToString("c"),
+                    CategoryRepository.GetCategoryNameById(book.CategoryID) ,
                     book.TotalCopies ,
                     book.AvailableCopies ,
                     status

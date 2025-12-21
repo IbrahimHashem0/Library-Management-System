@@ -31,6 +31,9 @@ namespace Library_Management_System.Repositories
                                 Publisher = reader["Publisher"].ToString(),
                                 Year = reader["Year"] as int?,
                                 CategoryID = reader["CategoryID"] != DBNull.Value ? (int)reader["CategoryID"] : 0,
+                                BorrowPrice = reader["BorrowingPrice"] != DBNull.Value
+                                      ? Convert.ToDecimal(reader["BorrowingPrice"])
+                                      : 0m,
                                 TotalCopies = (int)reader["TotalCopies"],
                                 AvailableCopies = (int)reader["AvailableCopies"]
                             });
@@ -47,8 +50,8 @@ namespace Library_Management_System.Repositories
             using (var conn = DatabaseHelper.GetConnection())
             {
                 conn.Open();
-                string query = @"INSERT INTO Books (Title, Author, ISBN, Publisher, Year, CategoryID, TotalCopies, AvailableCopies) 
-                                 VALUES (@Title, @Author, @ISBN, @Publisher, @Year, @CategoryID, @TotalCopies, @AvailableCopies)";
+                string query = @"INSERT INTO Books (Title, Author, ISBN, Publisher, Year, BorrowingPrice,CategoryID, TotalCopies, AvailableCopies) 
+                                 VALUES (@Title, @Author, @ISBN, @Publisher, @Year,@BorrowingPrice, @CategoryID, @TotalCopies, @AvailableCopies)";
 
                 using (var cmd = new SqlCommand(query, conn))
                 {
@@ -58,6 +61,7 @@ namespace Library_Management_System.Repositories
                     cmd.Parameters.AddWithValue("@Publisher", book.Publisher);
                     cmd.Parameters.AddWithValue("@Year", book.Year ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@CategoryID", book.CategoryID);
+                    cmd.Parameters.AddWithValue("@BorrowingPrice", book.BorrowPrice);
                     cmd.Parameters.AddWithValue("@TotalCopies", book.TotalCopies);
                     cmd.Parameters.AddWithValue("@AvailableCopies", book.TotalCopies); // Initially, available = total
 
@@ -109,6 +113,9 @@ namespace Library_Management_System.Repositories
                                 Year = reader["Year"] as int? ,
                                 CategoryID = reader["CategoryID"] != DBNull.Value ? (int)reader["CategoryID"] : 0 ,
                                 TotalCopies = (int)reader["TotalCopies"] ,
+                                BorrowPrice = reader["BorrowingPrice"] != DBNull.Value
+                                      ? Convert.ToDecimal(reader["BorrowingPrice"])
+                                      : 0m,
                                 AvailableCopies = (int)reader["AvailableCopies"]
                             });
                         }
@@ -134,7 +141,8 @@ namespace Library_Management_System.Repositories
                 Publisher = @Publisher,
                 CategoryID = @CategoryID,
                 TotalCopies = @TotalCopies,
-                AvailableCopies = @AvailableCopies
+                AvailableCopies = @AvailableCopies,
+                BorrowingPrice = @BorrowingPrice
             WHERE BookID = @BookID";
 
                 using (var cmd = new SqlCommand(query , conn))
@@ -148,6 +156,7 @@ namespace Library_Management_System.Repositories
                     cmd.Parameters.AddWithValue("@CategoryID" , book.CategoryID);
                     cmd.Parameters.AddWithValue("@TotalCopies" , book.TotalCopies);
                     cmd.Parameters.AddWithValue("@AvailableCopies" , book.AvailableCopies);
+                    cmd.Parameters.AddWithValue("@BorrowingPrice", book.BorrowPrice);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -180,6 +189,9 @@ namespace Library_Management_System.Repositories
                                 Publisher = reader["Publisher"] == DBNull.Value ? null : reader["Publisher"].ToString() ,
                                 Year = reader["Year"] == DBNull.Value ? (int?)null : (int)reader["Year"] ,
                                 CategoryID = reader["CategoryID"] == DBNull.Value ? 0 : (int)reader["CategoryID"] ,
+                                BorrowPrice = reader["BorrowingPrice"] != DBNull.Value
+                                      ? Convert.ToDecimal(reader["BorrowingPrice"])
+                                      : 0m,
                                 TotalCopies = (int)reader["TotalCopies"] ,
                                 AvailableCopies = (int)reader["AvailableCopies"]
                             };

@@ -11,7 +11,7 @@ namespace Library_Management_System.Services
     {
         public static bool validName(string name)
         {
-            return Regex.IsMatch(name, @"[^a-zA-Z]");
+            return Regex.IsMatch(name, @"[^a-zA-Z ]");
         }
     }
 

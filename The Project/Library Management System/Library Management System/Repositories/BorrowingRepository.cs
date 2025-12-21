@@ -89,9 +89,10 @@ namespace Library_Management_System.Repositories
                 {
                     try
                     {
-                        // 2. Check Stock AND Get Title
-                        string checkQuery = "SELECT AvailableCopies, Title FROM Books WHERE BookID = @BookID";
+                        // 2. Check Stock AND Get Title AND Price
+                        string checkQuery = "SELECT AvailableCopies, Title, BorrowingPrice FROM Books WHERE BookID = @BookID";
                         int available = 0;
+                        decimal borrowingPrice = 0m;
 
                         using (var cmdCheck = new SqlCommand(checkQuery, conn, transaction))
                         {
@@ -102,6 +103,7 @@ namespace Library_Management_System.Repositories
                                 {
                                     available = Convert.ToInt32(reader["AvailableCopies"]);
                                     bookTitle = reader["Title"].ToString();
+                                    borrowingPrice = reader["BorrowingPrice"] != DBNull.Value ? Convert.ToDecimal(reader["BorrowingPrice"]) : 0m;
                                 }
                             }
                         }
@@ -128,12 +130,22 @@ namespace Library_Management_System.Repositories
                             cmdInsert.ExecuteNonQuery();
                         }
 
+                        // 5. Create Bill (Payment Record)
+                        string insertBillQuery = @"
+                    INSERT INTO Payments (UserID, BookID, BorrowingPrice, PaymentDate, Status) 
+                    VALUES (@UserID, @BookID, @Price, GETDATE(), 'Pending')";
+
+                        using (var cmdBill = new SqlCommand(insertBillQuery, conn, transaction))
+                        {
+                            cmdBill.Parameters.AddWithValue("@UserID", userId);
+                            cmdBill.Parameters.AddWithValue("@BookID", bookId);
+                            cmdBill.Parameters.AddWithValue("@Price", borrowingPrice);
+                            cmdBill.ExecuteNonQuery();
+                        }
+
                         transaction.Commit();
 
-                        // --- NEW: Send Notification ---
-                        // We do this AFTER commit to ensure we don't notify if the transaction fails.
-                        // Ideally checking connection state or using a new connection if needed, 
-                        // but usually acceptable to call a separate repo method here.
+                        
                         try
                         {
                             var notifRepo = new NotificationRepository();
@@ -215,10 +227,12 @@ namespace Library_Management_System.Repositories
                 {
                     try
                     {
-                        // A. Get BookID, TIitle  AND UserID first (needed for stock update and notification)
+                        // A. Get BookID, TIitle, UserID AND DueDate first (needed for fine calc)
                         int bookId = 0;
+                        DateTime dueDate = DateTime.MinValue;
+
                         string getBookInfoQuery = @"
-                            SELECT br.BookID, br.UserID, b.Title 
+                            SELECT br.BookID, br.UserID, br.DueDate, b.Title 
                             FROM Borrowings br
                             JOIN Books b ON br.BookID = b.BookID
                             WHERE br.BorrowingID = @ID";
@@ -233,6 +247,7 @@ namespace Library_Management_System.Repositories
                                     bookId = (int)reader["BookID"];
                                     userId = (int)reader["UserID"];
                                     bookTitle = reader["Title"].ToString();
+                                    dueDate = Convert.ToDateTime(reader["DueDate"]);
                                 }
                             }
                         }
@@ -258,13 +273,63 @@ namespace Library_Management_System.Repositories
 
                         transaction.Commit();
 
+                        // --- NEW: Calculate Fine if Overdue ---
+                        try
+                        {
+                            if (DateTime.Now > dueDate)
+                            {
+                                int overdueDays = (DateTime.Now - dueDate).Days;
+                                if (overdueDays > 0)
+                                {
+                                    decimal fineAmount = overdueDays * 1.0m; // $1 per day
+
+                                    // 1. Create Fine Record
+                                    string insertFineQuery = @"
+                                INSERT INTO Payments (UserID, BookID, BorrowingPrice, PaymentDate, Status) 
+                                VALUES (@UserID, @BookID, @Price, GETDATE(), 'Fine')";
+
+                                    using (var cmdFine = new SqlCommand(insertFineQuery, conn, transaction))
+                                    {
+                                        cmdFine.Parameters.AddWithValue("@UserID", userId);
+                                        cmdFine.Parameters.AddWithValue("@BookID", bookId);
+                                        cmdFine.Parameters.AddWithValue("@Price", fineAmount);
+                                        cmdFine.ExecuteNonQuery();
+                                    }
+
+                                    // 2. Add to Notification parameters
+                                    // We'll handle notification below, just modifying the message logic
+                                }
+                            }
+                        }
+                        catch { }
+
                         // --- NEW: Send Notification ---
                         try
                         {
                             if (userId > 0)
                             {
                                 var notifRepo = new NotificationRepository();
-                                notifRepo.AddNotification(userId, "Return Success", $"You have successfully returned '{bookTitle}'. Thank you!");
+                                string message = $"You have successfully returned '{bookTitle}'. Thank you!";
+
+                                // Check if overdue again for message context (simple logic since we are outside transaction scope for safe notification)
+                                if (DateTime.Now > dueDate)
+                                {
+                                    int days = (DateTime.Now - dueDate).Days;
+                                    if (days > 0)
+                                    {
+                                        decimal fine = days * 1.0m;
+                                        message = $"You returned '{bookTitle}' {days} days late. A fine of {fine:C2} has been applied.";
+                                        notifRepo.AddNotification(userId, "Overdue Return Fine", message);
+                                    }
+                                    else
+                                    {
+                                        notifRepo.AddNotification(userId, "Return Success", message);
+                                    }
+                                }
+                                else
+                                {
+                                    notifRepo.AddNotification(userId, "Return Success", message);
+                                }
                             }
                         }
                         catch { }

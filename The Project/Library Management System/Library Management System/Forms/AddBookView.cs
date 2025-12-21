@@ -8,6 +8,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
@@ -22,7 +23,7 @@ namespace Library_Management_System.Forms
         private TextBox titleTxt;
         private TextBox authorTxt;
         private TextBox isbnTxt;
-        private TextBox publisherTxt;
+        private TextBox publisherTxt, BorrowingPricetxt;
         private NumericUpDown totalCopiesNum;
         private ComboBox categoryCombo;
         private NumericUpDown yearNum;
@@ -56,13 +57,13 @@ namespace Library_Management_System.Forms
             authorTxt = CreateTextBox("Author" , 170);
             isbnTxt = CreateTextBox("ISBN" , 240);
             publisherTxt = CreateTextBox("Publisher" , 310);
-
+            BorrowingPricetxt= CreateTextBox("Borrowing Price", 370);
 
             // ===== Year =====
             Label yearLabel = new Label
             {
                 Text = "Year" ,
-                Location = new Point(20 , 370) , 
+                Location = new Point(20 , 420) , 
                 Font = new Font("Segoe UI" , 11 , FontStyle.Bold) ,
                 AutoSize = true
             };
@@ -70,7 +71,7 @@ namespace Library_Management_System.Forms
 
             yearNum = new NumericUpDown
             {
-                Location = new Point(20 , 395) ,
+                Location = new Point(20 , 445) ,
                 Width = 300 ,
                 Minimum = 1000 ,
                 Maximum = DateTime.Now.Year ,
@@ -83,7 +84,7 @@ namespace Library_Management_System.Forms
             Label copiesLabel = new Label
             {
                 Text = "Total Copies" ,
-                Location = new Point(20 , 430) ,
+                Location = new Point(20 , 480) ,
                 Font = new Font("Segoe UI" , 11 , FontStyle.Bold) ,
                 AutoSize = true
             };
@@ -91,7 +92,7 @@ namespace Library_Management_System.Forms
 
             totalCopiesNum = new NumericUpDown
             {
-                Location = new Point(20 , 455) ,
+                Location = new Point(20 , 505) ,
                 Width = 300 ,
                 Minimum = 1 ,
                 Maximum = 10000 ,
@@ -104,7 +105,7 @@ namespace Library_Management_System.Forms
             Label categoryLabel = new Label
             {
                 Text = "Category" ,
-                Location = new Point(20 , 490) ,
+                Location = new Point(20 , 535) ,
                 Font = new Font("Segoe UI" , 11 , FontStyle.Bold) ,
                 AutoSize = true
             };
@@ -112,7 +113,7 @@ namespace Library_Management_System.Forms
 
             categoryCombo = new ComboBox
             {
-                Location = new Point(20 , 520) ,
+                Location = new Point(20 , 555) ,
                 Width = 300 ,
                 Font = new Font("Segoe UI" , 11) ,
                 DropDownStyle = ComboBoxStyle.DropDownList
@@ -123,7 +124,7 @@ namespace Library_Management_System.Forms
             saveBtn = new Button
             {
                 Text = "Add Book" ,
-                Location = new Point(20 , 570) ,
+                Location = new Point(20 , 600) ,
                 Size = new Size(140 , 40) ,
                 BackColor = Color.FromArgb(79 , 70 , 229) ,
                 ForeColor = Color.White ,
@@ -135,7 +136,7 @@ namespace Library_Management_System.Forms
             cancelBtn = new Button
             {
                 Text = "Cancel" ,
-                Location = new Point(180 , 570) ,
+                Location = new Point(180 , 600) ,
                 Size = new Size(140 , 40) ,
                 FlatStyle = FlatStyle.Flat ,
                 Cursor = Cursors.Hand
@@ -210,7 +211,16 @@ namespace Library_Management_System.Forms
                 return;
             }
 
-
+            if (string.IsNullOrWhiteSpace(BorrowingPricetxt.Text))
+            {
+                MessageBox.Show("Borrowing Price is required.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            if (Convert.ToDecimal(BorrowingPricetxt.Text) < 1)
+            {
+                MessageBox.Show("Borrwing Price should be more than or equal to 1.00$.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
 
             string title = titleTxt.Text.Trim();
             string author = authorTxt.Text.Trim();
@@ -225,7 +235,7 @@ namespace Library_Management_System.Forms
                 return;
             }
 
-            if (CheckName.validName(author))
+            if (Regex.IsMatch(author, @"[^a-zA-Z .]"))
             {
                 MessageBox.Show("Author Name should conatin only letters", "Invalid Author Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -265,7 +275,8 @@ namespace Library_Management_System.Forms
                 Year = year ,
                 CategoryID = categoryId ,
                 TotalCopies = totalCopies ,
-                AvailableCopies = totalCopies
+                AvailableCopies = totalCopies,
+                BorrowPrice = Convert.ToDecimal(BorrowingPricetxt.Text)
             };
 
             try

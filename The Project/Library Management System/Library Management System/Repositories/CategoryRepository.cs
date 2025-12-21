@@ -39,5 +39,28 @@ namespace Library_Management_System.Repositories
             }
             return list;
         }
+        public static string GetCategoryNameById(int id)
+        {
+            if (id == 0) return "All";
+            string categoryName = "";
+            using (var conn = DatabaseHelper.GetConnection())
+            {
+                conn.Open();
+
+                string query = "SELECT Name FROM Categories WHERE CategoryID = @id";
+
+                using (var cmd = new SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@id", id);
+                    var result = cmd.ExecuteScalar();
+
+                    if (result != null)
+                    {
+                        categoryName = result.ToString();
+                    }
+                }
+            }
+            return categoryName;
+        }
     }
 }

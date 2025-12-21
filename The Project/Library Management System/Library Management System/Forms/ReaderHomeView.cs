@@ -243,7 +243,7 @@ namespace Library_Management_System.Forms
 
 
                 var confirmResult = MessageBox.Show(
-                    $"Do you want to borrow '{book.Title}'?",
+                    $"Do you want to borrow '{book.Title}' with Borrowing price {book.BorrowPrice.ToString("c")}?",
                     "Confirm Borrow",
                     MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question);
