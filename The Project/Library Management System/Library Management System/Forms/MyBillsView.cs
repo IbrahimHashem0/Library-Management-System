@@ -87,7 +87,7 @@ namespace Library_Management_System.Forms
             billsGrid.Rows.Clear();
             foreach (var b in bills)
             {
-                billsGrid.Rows.Add(b.BookTitle, b.Date, b.Price.ToString("C2"), b.Status);
+                billsGrid.Rows.Add(b.BookTitle, b.Date, b.Price.ToString("c"), b.Status);
             }
         }
 

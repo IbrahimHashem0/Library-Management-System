@@ -284,9 +284,9 @@ namespace Library_Management_System.Forms
                     if (data.IsUnread)
                     {
                         anyUnread = true;
-                        NotificationRepository repository = new NotificationRepository();
+                        ///NotificationRepository repository = new NotificationRepository();
 
-                        repository.MarkAsRead(data.ID);
+                        //repository.MarkAsRead(data.ID);
                         break;
                     }
                 }

@@ -229,22 +229,13 @@ namespace Library_Management_System.Forms
             int year = (int)yearNum.Value;
             int categoryId = (int)categoryCombo.SelectedValue;
             int totalCopies = (int)totalCopiesNum.Value;
-            if (CheckName.validName(title))
-            {
-                MessageBox.Show("Title should conatin only letters", "Invalid Title", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
+            
             if (Regex.IsMatch(author, @"[^a-zA-Z .]"))
             {
                 MessageBox.Show("Author Name should conatin only letters", "Invalid Author Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-            if (CheckName.validName(publisher))
-            {
-                MessageBox.Show("Publisher Name should conatin only letters", "Invalid Publisher Name", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
+            
 
             if (isbn.Length!=13 && isbn.Length != 10)
             {
